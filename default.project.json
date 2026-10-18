@@ -1,0 +1,71 @@
+{
+  "name": "ADAPT",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Shared": {
+        "$path": "src/shared"
+      }
+    },
+    "ServerScriptService": {
+      "Server": {
+        "$path": "src/server"
+      }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "src/client"
+        }
+      },
+      "$properties": {
+        "CameraMinZoomDistance": 7,
+        "CameraMaxZoomDistance": 40
+      }
+    },
+    "Workspace": {
+      "$properties": {
+        "FilteringEnabled": true,
+        "Gravity": 140,
+        "FallenPartsDestroyHeight": -320,
+        "StreamingEnabled": true,
+        "StreamingMinRadius": 128,
+        "StreamingTargetRadius": 512,
+        "StreamingIntegrityMode": "PauseOutsideLoadedArea",
+        "ModelStreamingBehavior": "Improved",
+        "StreamOutBehavior": "Opportunistic",
+        "GlobalWind": [
+          5,
+          0,
+          2
+        ]
+      },
+      "Terrain": {
+        "$path": "world/Terrain.rbxmx"
+      }
+    },
+    "Lighting": {
+      "$properties": {
+        "ClockTime": 16.5,
+        "Brightness": 2,
+        "Ambient": [
+          0.32,
+          0.35,
+          0.43
+        ],
+        "OutdoorAmbient": [
+          0.55,
+          0.58,
+          0.65
+        ],
+        "FogStart": 1100,
+        "FogEnd": 6000
+      }
+    },
+    "SoundService": {
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    }
+  }
+}

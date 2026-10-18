@@ -1,0 +1,10 @@
+.tools/
+build/*.rbxl
+build/*.rbxlx
+build/*.json
+*.log
+.DS_Store
+
+__pycache__/
+.venv/
+backups/

@@ -1,0 +1,28 @@
+{
+  "languageMode": "nonstrict",
+  "globals": [
+    "game",
+    "workspace",
+    "script",
+    "Instance",
+    "Vector3",
+    "Vector2",
+    "Color3",
+    "CFrame",
+    "Enum",
+    "UDim",
+    "UDim2",
+    "Font",
+    "RaycastParams",
+    "Random",
+    "TweenInfo",
+    "task",
+    "warn",
+    "NumberRange",
+    "NumberSequence",
+    "ColorSequence"
+  ],
+  "lint": {
+    "UnknownType": false
+  }
+}

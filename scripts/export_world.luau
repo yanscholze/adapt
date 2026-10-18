@@ -1,0 +1,6 @@
+local fs = require("@lune/fs")
+local serde = require("@lune/serde")
+local data = require("../src/shared/WorldDefinition")
+data.areas = require("../src/shared/Areas")
+fs.writeFile("build/world-layout.json", serde.encode("json", data))
+print("Authored archipelago layout exported; seed", data.seed)

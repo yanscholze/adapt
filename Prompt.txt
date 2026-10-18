@@ -1,0 +1,705 @@
+Você é o engenheiro principal responsável por construir o primeiro MVP jogável de uma experiência original para Roblox.
+
+NOME PROVISÓRIO
+ADAPT!
+
+OBJETIVO DESTA SESSÃO
+
+Trabalhe de forma autônoma e implemente o máximo possível de um MVP realmente jogável.
+
+Não pare após criar documentação, arquitetura, TODOs ou exemplos.
+Depois de planejar brevemente, implemente o projeto.
+
+Antes de alterar qualquer coisa:
+1. audite completamente o diretório atual;
+2. identifique a estrutura existente;
+3. identifique ferramentas disponíveis;
+4. verifique se existe projeto Roblox/Rojo/Luau já configurado;
+5. preserve qualquer configuração funcional existente;
+6. então escolha a arquitetura mais simples, robusta e extensível.
+
+Não destrua arquivos funcionais sem necessidade.
+
+Se alguma integração externa não puder ser executada no ambiente atual, implemente todo o código possível, deixe a interface preparada e documente exatamente o passo manual restante.
+
+==================================================
+VISÃO DO JOGO
+==================================================
+
+ADAPT! é um jogo social de exploração e evolução de criaturas.
+
+O jogador começa como uma pequena criatura neutra chamada provisoriamente "Blank".
+
+A criatura não evolui simplesmente aumentando números.
+
+Ela adquire ADAPTAÇÕES físicas que:
+
+1. mudam visualmente o corpo;
+2. concedem uma habilidade;
+3. permitem interagir ou acessar novas partes do mundo.
+
+Exemplos:
+
+Wings:
+- adiciona asas visualmente;
+- permite planar;
+- futuramente permite voo;
+- possibilita acessar regiões aéreas.
+
+Grip Claws:
+- adiciona garras;
+- permite escalar determinadas superfícies;
+- abre caminhos verticais.
+
+Night Eyes:
+- altera os olhos;
+- permite revelar objetos/essências especiais em áreas escuras.
+
+Futuramente existirão:
+- Gills;
+- Heat Skin;
+- Fins;
+- Shell;
+- Shock Tail;
+- Venom;
+- Sonar;
+- Frost Skin;
+etc.
+
+IMPORTANTE:
+O sistema deve ser DATA-DRIVEN.
+Não construa a arquitetura assumindo somente três adaptações.
+
+Adicionar uma adaptação futuramente deve exigir o mínimo possível de código novo.
+
+==================================================
+CORE LOOP
+==================================================
+
+O loop fundamental é:
+
+explorar
+→ coletar Essence
+→ ganhar Evolution Energy
+→ atingir um threshold
+→ receber 3 opções de adaptação
+→ escolher uma
+→ criatura muda visualmente
+→ habilidade é desbloqueada
+→ novos caminhos tornam-se acessíveis
+→ repetir
+
+A transformação deve produzir feedback imediatamente perceptível.
+
+==================================================
+PRINCÍPIO DE DESIGN
+==================================================
+
+Uma adaptação NÃO é somente um stat boost.
+
+Ela deve idealmente possuir três dimensões:
+
+VISUAL
++
+GAMEPLAY
++
+TRAVERSAL
+
+O jogador deve olhar para outra criatura e perceber parte da build dela.
+
+==================================================
+LOADOUT / ANATOMIA
+==================================================
+
+Prepare o sistema para slots corporais.
+
+Slots planejados:
+
+Head
+Body
+Arms
+Legs
+Back
+Tail
+
+Cada adaptação declara qual slot ocupa.
+
+Uma adaptação pode substituir outra do mesmo slot.
+
+O MVP não precisa possuir seis adaptações completas, mas a arquitetura deve suportar isso.
+
+==================================================
+MVP DESTA IMPLEMENTAÇÃO
+==================================================
+
+Implemente, se tecnicamente possível:
+
+1. personagem Blank;
+2. sistema de Essence;
+3. spawner de Essence;
+4. coleta;
+5. Evolution Energy;
+6. progressão;
+7. escolha entre adaptações;
+8. UI de escolha com três cards;
+9. Wings;
+10. Grip Claws;
+11. Night Eyes;
+12. mudança visual correspondente;
+13. habilidade de Glide;
+14. sistema de superfícies escaláveis;
+15. objetos ocultos revelados por Night Eyes;
+16. mapa protótipo;
+17. área inicial;
+18. penhasco;
+19. caverna;
+20. ilha elevada/flutuante;
+21. um Guardian simples;
+22. sistema inicial de Codex;
+23. persistência;
+24. leaderboard;
+25. feedback visual/sonoro básico;
+26. suporte a desktop e mobile;
+27. arquitetura para analytics;
+28. sistema inicial de synergy secreta;
+29. sistema de debug útil para desenvolvimento.
+
+==================================================
+MUNDO DO MVP
+==================================================
+
+Construa um mapa protótipo funcional usando primitives e assets simples gerados dentro do Studio sempre que possível.
+
+Não dependa de assets pagos ou copyrighted.
+
+ÁREA 1 — WILDS
+
+Área inicial segura.
+
+Deve conter:
+- Essence;
+- pequenos obstáculos;
+- caminhos visíveis;
+- vista para áreas ainda inacessíveis.
+
+O jogador deve conseguir enxergar o penhasco, a caverna e a ilha elevada.
+
+ÁREA 2 — CLIFF
+
+Deve possuir superfícies marcadas como escaláveis.
+
+Jogadores com Grip Claws conseguem subir por uma rota especial.
+
+ÁREA 3 — CAVE
+
+Área escura.
+
+Night Eyes deve revelar:
+- Essence especial;
+ou
+- objetos/caminho oculto.
+
+Jogadores sem Night Eyes devem perceber que existe algo ali, mas não obter o mesmo benefício.
+
+ÁREA 4 — SKY ISLAND
+
+Deve existir uma área elevada acessível usando Glide/Wings através de uma rota planejada.
+
+O jogador deve conseguir enxergá-la cedo para criar curiosidade.
+
+==================================================
+ESSENCE
+==================================================
+
+Crie um sistema modular.
+
+Cada Essence deve ter:
+- id;
+- displayName;
+- rarity;
+- energyValue;
+- visual configuration;
+- spawn rules, quando aplicável.
+
+No MVP pode existir uma Essence comum e uma Essence rara.
+
+A coleta deve:
+- validar no servidor;
+- impedir exploit trivial;
+- conceder energia;
+- tocar feedback;
+- remover/desativar o collectible;
+- permitir respawn.
+
+==================================================
+EVOLUTION ENERGY
+==================================================
+
+O servidor deve ser authoritative.
+
+Nunca confie no cliente para conceder:
+- energia;
+- adaptação;
+- moeda;
+- progresso;
+- unlocks.
+
+Implemente thresholds configuráveis.
+
+Quando o jogador atingir um threshold:
+- pause ou marque a evolução pendente;
+- gere opções válidas;
+- envie ao cliente;
+- mostre três cards;
+- jogador escolhe;
+- servidor valida;
+- servidor aplica.
+
+==================================================
+ADAPTATION SYSTEM
+==================================================
+
+Crie uma definição central/data-driven das adaptações.
+
+Cada adaptação deve poder declarar algo equivalente a:
+
+id
+displayName
+description
+rarity
+slot
+visualData
+abilityData
+requirements
+tags
+synergyTags
+
+Não copie essa estrutura literalmente se houver uma arquitetura melhor.
+
+O importante é centralizar configuração e separar dados de comportamento.
+
+==================================================
+WINGS
+==================================================
+
+Slot: Back.
+
+Visual:
+adicione asas simples estilizadas ao Blank.
+
+Gameplay:
+permita Glide.
+
+Glide:
+- deve funcionar no ar;
+- reduzir velocidade de queda;
+- permitir deslocamento horizontal controlável;
+- não permitir voo infinito;
+- validar condições relevantes;
+- funcionar razoavelmente em desktop e mobile.
+
+==================================================
+GRIP CLAWS
+==================================================
+
+Slot: Arms ou Legs, escolha a solução mais coerente.
+
+Visual:
+garras claramente visíveis.
+
+Gameplay:
+permite escalar superfícies especificamente marcadas.
+
+Não permita escalar qualquer parede do mapa.
+
+Use tags/attributes ou sistema equivalente para identificar superfícies escaláveis.
+
+==================================================
+NIGHT EYES
+==================================================
+
+Slot: Head.
+
+Visual:
+olhos diferentes/brilhantes.
+
+Gameplay:
+revele objetos marcados como NightVisionRevealable.
+
+O efeito deve ocorrer localmente para aquele jogador.
+
+Não revele os objetos globalmente para todos.
+
+==================================================
+SYNERGY SYSTEM
+==================================================
+
+Prepare um sistema genérico de synergies.
+
+Uma synergy ocorre quando determinada combinação de adaptações/tags está equipada.
+
+Crie UMA synergy secreta de demonstração usando as adaptações disponíveis no MVP.
+
+Não precisa ser extremamente poderosa.
+
+O objetivo é provar que o sistema funciona.
+
+A descoberta deve poder ser registrada no Codex.
+
+==================================================
+CODEX
+==================================================
+
+Crie uma interface simples que registre:
+
+- adaptações descobertas;
+- synergies descobertas;
+- biomas/áreas descobertas, se viável.
+
+Itens ainda não descobertos podem aparecer como "???".
+
+O sistema deve ser preparado para expansão futura.
+
+==================================================
+GUARDIAN
+==================================================
+
+Crie um Guardian simples no final de uma pequena rota.
+
+Não faça IA excessivamente complexa.
+
+Precisa:
+- possuir HP;
+- atacar;
+- receber dano;
+- morrer;
+- conceder recompensa;
+- respawnar.
+
+Priorize funcionamento e arquitetura limpa.
+
+==================================================
+PERSISTÊNCIA
+==================================================
+
+Use DataStoreService de forma segura.
+
+Salvar:
+- adaptações descobertas;
+- adaptações equipadas;
+- synergies descobertas;
+- Evolution progress relevante;
+- Codex;
+- configurações essenciais.
+
+Implemente:
+- pcall;
+- tratamento de falhas;
+- valores default;
+- versionamento/schema simples;
+- proteção contra perda óbvia de dados.
+
+Não salve a cada frame ou coleta.
+
+Use estratégia razoável de autosave e save ao sair.
+
+==================================================
+LEADERBOARD
+==================================================
+
+Crie leaderstats simples.
+
+Pode exibir:
+- Evolution Level;
+ou
+- Discoveries.
+
+Escolha o que fizer mais sentido para o MVP.
+
+==================================================
+FTUE
+==================================================
+
+O primeiro minuto deve ser extremamente rápido.
+
+Objetivo:
+
+0-10s:
+jogador entende que deve coletar Essence.
+
+10-30s:
+primeira evolução.
+
+30-60s:
+primeira adaptação é escolhida e usada.
+
+Evite tutorial baseado em paredes de texto.
+
+Prefira:
+- indicador visual;
+- waypoint;
+- pequena mensagem;
+- feedback contextual.
+
+==================================================
+UI/UX
+==================================================
+
+UI deve funcionar em:
+- desktop;
+- mobile;
+- diferentes aspect ratios.
+
+Crie:
+- barra de Evolution Energy;
+- indicador de nível;
+- Evolution Choice;
+- Codex;
+- mensagens contextuais.
+
+Visual provisório:
+- colorido;
+- limpo;
+- arredondado;
+- legível;
+- estilizado;
+- adequado ao Roblox;
+- sem copiar UI de outros jogos.
+
+Não gaste tempo excessivo em polish antes do gameplay funcionar.
+
+==================================================
+ARQUITETURA
+==================================================
+
+Use uma organização profissional e compreensível.
+
+Separe adequadamente:
+- código de servidor;
+- código de cliente;
+- shared modules/config;
+- remotes;
+- UI;
+- systems/services.
+
+Evite:
+- scripts gigantes;
+- globals desnecessários;
+- duplicação;
+- lógica de autoridade no cliente;
+- RemoteEvents sem validação;
+- números mágicos espalhados.
+
+Use Luau moderno e tipagem onde trouxer benefício real.
+
+Não transforme o projeto em overengineering.
+
+O objetivo é um MVP que possamos entender, modificar e expandir.
+
+==================================================
+SEGURANÇA
+==================================================
+
+Assuma que clientes podem ser maliciosos.
+
+Valide no servidor:
+- coleta;
+- distância razoável;
+- escolha de adaptação;
+- recompensas;
+- progressão;
+- Guardian rewards.
+
+Adicione rate limiting simples onde RemoteEvents puderem ser abusados.
+
+==================================================
+PERFORMANCE
+==================================================
+
+O jogo deve ser pensado para mobile.
+
+Evite:
+- loops pesados por frame;
+- centenas de Parts desnecessárias;
+- efeitos excessivos;
+- lógica cara por jogador;
+- conexões/eventos vazando.
+
+Desconecte eventos quando necessário.
+
+==================================================
+ANALYTICS
+==================================================
+
+Crie uma camada/serviço de analytics desacoplada.
+
+Mesmo que não seja possível conectar analytics reais agora, prepare eventos para:
+
+FTUE_STARTED
+FIRST_ESSENCE
+FIRST_EVOLUTION_READY
+FIRST_ADAPTATION_SELECTED
+FIRST_ABILITY_USED
+FIRST_NEW_AREA
+FIRST_GUARDIAN
+FIRST_GUARDIAN_DEFEATED
+CODEX_OPENED
+
+A implementação não deve quebrar caso analytics estejam desativados.
+
+==================================================
+DEBUG / TESTE
+==================================================
+
+Crie ferramentas simples para desenvolvimento, protegidas para Studio/admin quando apropriado.
+
+Seria útil poder:
+- adicionar Evolution Energy;
+- resetar build;
+- conceder adaptação;
+- teleportar para áreas;
+- imprimir estado do jogador.
+
+Não exponha comandos administrativos inseguros em produção.
+
+==================================================
+QUALIDADE
+==================================================
+
+Antes de considerar a tarefa concluída:
+
+1. revise todos os arquivos criados;
+2. procure erros de Luau;
+3. procure require paths inválidos;
+4. procure RemoteEvents inconsistentes;
+5. verifique dependências circulares;
+6. verifique código cliente/servidor;
+7. verifique persistência;
+8. verifique respawn;
+9. verifique múltiplos jogadores;
+10. verifique mobile;
+11. corrija problemas encontrados.
+
+Se houver ferramentas disponíveis para testes, execute-as.
+
+==================================================
+GIT
+==================================================
+
+Se o projeto estiver em Git:
+
+- examine git status antes de trabalhar;
+- não destrua alterações existentes;
+- mantenha mudanças relacionadas ao projeto;
+- ao final mostre git diff/status;
+- NÃO faça push;
+- NÃO publique automaticamente;
+- NÃO use credenciais.
+
+==================================================
+ORIGINALIDADE
+==================================================
+
+Este projeto deve possuir identidade própria.
+
+NÃO copie:
+- código;
+- mapas;
+- personagens;
+- nomes;
+- UI;
+- assets;
+- thumbnails;
+- progression tables;
+- monetização;
+- design específico
+
+de Evolve a Cell, Spore, Creatures of Sonaria, Craft a Creature, Evolve, Terra ou qualquer outra experiência.
+
+Referências de gênero podem ser usadas apenas para compreender padrões gerais.
+
+Crie implementação, identidade e conteúdo originais.
+
+Não use propriedades intelectuais protegidas de terceiros.
+
+==================================================
+ESCOPO / PRIORIDADES
+==================================================
+
+Se não houver tempo para tudo, priorize nesta ordem:
+
+P0
+- projeto funcionando;
+- Blank;
+- Essence;
+- Energy;
+- Evolution Choice;
+- sistema data-driven de adaptações;
+- Wings/Glide;
+- Grip Claws/Climb;
+- Night Eyes/Reveal;
+- mapa protótipo.
+
+P1
+- persistência;
+- Codex;
+- synergy;
+- Guardian;
+- UI melhor;
+- mobile.
+
+P2
+- analytics;
+- leaderboard;
+- VFX/SFX;
+- polish;
+- ferramentas adicionais.
+
+NÃO sacrifique o core gameplay para implementar sistemas P2.
+
+==================================================
+FORMA DE TRABALHO
+==================================================
+
+Não fique pedindo confirmação para decisões pequenas.
+
+Tome decisões técnicas razoáveis e continue.
+
+Se encontrar uma limitação:
+1. investigue;
+2. tente uma alternativa segura;
+3. continue implementando o restante;
+4. documente a limitação ao final.
+
+Não encerre após o planejamento.
+
+Planeje brevemente e CONSTRUA.
+
+==================================================
+ENTREGA FINAL
+==================================================
+
+Quando terminar, apresente:
+
+1. o que foi implementado;
+2. estrutura de arquivos;
+3. arquitetura;
+4. como executar no Roblox Studio;
+5. como testar cada adaptação;
+6. comandos/debug disponíveis;
+7. limitações atuais;
+8. bugs conhecidos;
+9. itens que exigem ação manual no Studio;
+10. próximos 10 passos recomendados, priorizados;
+11. git status/diff resumido.
+
+Também crie no repositório uma documentação curta contendo:
+- arquitetura;
+- como adicionar uma nova adaptação;
+- como adicionar uma synergy;
+- como adicionar uma nova área;
+- modelo de dados salvo.
+
+O resultado desejado NÃO é um documento descrevendo um jogo.
+
+O resultado desejado é O MÁXIMO POSSÍVEL DE UM JOGO FUNCIONAL.
