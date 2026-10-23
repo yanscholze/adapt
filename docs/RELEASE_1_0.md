@@ -45,6 +45,8 @@ A campanha foi executada do começo ao fim pelos serviços reais com adapters of
 
 Nesta sessão, o StudioMCP 1.0 respondeu à inicialização, mas recusou a conexão com o host Studio e encerrou com falha no Wine. Nenhum Play real, medição de FPS, login, upload, publicação ou acesso a credenciais foi executado. A liberação pública depende da validação de `STUDIO_TESTS.md` e das configurações da conta, descritas em `PUBLISHING.md`.
 
+Após a entrega inicial, foi corrigido o byte order das coordenadas do Terrain que congelava a abertura. O mapa completo passou a carregar no mesmo Studio/Vinegar, confirmado pelo evento `OpenPlaceSuccess`; consulte `TERRAIN_LOAD_FIX.md`. Esta confirmação de abertura não equivale ao playtest acima.
+
 ## Reconstruir
 
 `python3 scripts/check.py` reconstrói o Terrain e o lugar, compila e analisa Luau, valida as referências, executa as suítes e gera atlas/âncoras. `python3 scripts/package.py` cria o pacote da versão atual com manifesto e validação de ZIP. As ferramentas ficam em `.tools/`; o arquivo pronto do Studio é independente delas.

@@ -69,7 +69,9 @@ end
 function Ability:Step(dt, now)
 	for player, r in self.players.records do
 		local char = player.Character; local root = char and char:FindFirstChild("HumanoidRootPart"); local h = char and char:FindFirstChildOfClass("Humanoid")
-		if not root or not h or h.Health <= 0 then self:Stop(player); continue end
+		-- LoadCharacterAsync exposes the new rig before checkpoint placement is
+		-- complete. Do not interpret that placement as an unauthorized teleport.
+		if not root or not h or h.Health <= 0 or char:GetAttribute("SpawnedAt") == nil then self:Stop(player); continue end
 		local m = self.motion[player]
 		if not m or m.character ~= char then m = { position = root.CFrame.Position, time = now, character = char }; self.motion[player] = m end
 		if not finitePosition(root.CFrame.Position) then

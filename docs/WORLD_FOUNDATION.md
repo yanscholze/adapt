@@ -62,7 +62,9 @@ Para reconstruir: `make build`. Para construir e verificar: `python3 scripts/che
 
 A etapa de Terrain precisa de NumPy e Pillow. O localizador usa Python com essas bibliotecas ou o runtime fornecido pelo Codex neste ambiente. Em outra máquina, instale `requirements-world.txt` em uma venv e aponte `ADAPT_WORLD_PYTHON` para seu Python. O jogo pronto não depende de Python, dessas bibliotecas ou de Rojo.
 
-O projeto usa uma implementação própria do formato público SmoothGrid. Referências: [especificação de Terrain no rbx-dom](https://github.com/rojo-rbx/rbx-dom/blob/45cc9de5053bc8fcfaf6d9a5731eeb77dc872fd3/docs/smooth-grid.md), [explicação de armazenamento pelo autor do sistema](https://zeux.io/2017/03/27/voxel-terrain-storage/). O decoder independente também foi conferido contra um fixture público do Rojo. Nenhum terreno de terceiros foi incorporado ao mundo do jogo.
+O projeto usa uma implementação própria do formato público SmoothGrid. Referências: [especificação de Terrain no rbx-dom](https://github.com/rojo-rbx/rbx-dom/blob/45cc9de5053bc8fcfaf6d9a5731eeb77dc872fd3/docs/smooth-grid.md), [explicação de armazenamento pelo autor do sistema](https://zeux.io/2017/03/27/voxel-terrain-storage/). Nenhum terreno de terceiros foi incorporado ao mundo do jogo.
+
+**Correção em 23/10/2026:** a verificação original do fixture público do Rojo conferia os blocos, mas não as coordenadas esperadas. O gerador e o decoder compartilhavam uma suposição incorreta sobre byte order. As coordenadas são inteiros big-endian com bytes intercalados, apesar da indicação genérica de little-endian na referência acima. O erro foi corrigido e passou a ter um contrato de bytes fixo baseado em offsets gravados pelo Studio. Veja `TERRAIN_LOAD_FIX.md` e a validação atual; o arquivo histórico World Foundation continua preservado e não deve ser usado para testar esta correção.
 
 ## Streaming e orçamento
 

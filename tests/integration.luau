@@ -32,6 +32,30 @@ check("Blank rigs have complete R6 anatomy, visible shell and independent owners
 	end
 	assert(p1.Character ~= p2.Character)
 end)
+check("custom rigs spawn through the engine lifecycle and use independent template clones", function()
+	local template = h.game:GetService("StarterPlayer").StarterCharacter
+	assert(template.Humanoid.RigType == r.Enum.HumanoidRigType.R6 and not template:FindFirstChild("Appearance"))
+	assert(not h.game:GetService("StarterPlayer").LoadCharacterAppearance)
+	for _, p in { p1, p2 } do
+		assert(h.characterLoads[p] == 1 and p.Character ~= template)
+		assert(p.Character.HumanoidRootPart ~= template.HumanoidRootPart)
+		for _, part in p.Character:GetDescendants() do if part:IsA("BasePart") then assert(not part.Anchored) end end
+	end
+end)
+check("spawn loading cannot recurse or establish a premature movement baseline", function()
+	local p = player(103); assert(Players:Add(p, true))
+	h.loadCharacterHook = function(loadingPlayer)
+		assert(loadingPlayer == p); Characters:Spawn(p)
+		assert(h.characterLoads[p] == 1)
+	end
+	Characters:Spawn(p); h.loadCharacterHook = nil
+	local char = p.Character; local spawned = char:GetAttribute("SpawnedAt")
+	char:SetAttribute("SpawnedAt", nil); Ability:Step(.1, os.clock())
+	assert(Ability.motion[p] == nil)
+	char:SetAttribute("SpawnedAt", spawned); Ability:Step(.1, os.clock())
+	assert(Ability.motion[p].character == char)
+	Characters:Remove(p); Ability:Remove(p); Players:Remove(p); p:Destroy()
+end)
 check("all areas resolve and only the marked wall is climbable", function()
 	for id, data in h.require(h.shared.Areas) do assert(World:AreaAt(r.Vector3.new(table.unpack(data.spawn))) == id) end
 	assert(World.model.Core.ClimbFace:HasTag("Climbable") and not World.model.Core.CliffMass:HasTag("Climbable"))
@@ -69,6 +93,7 @@ check("death and respawn preserve build, Codex and progress", function()
 	local callback; for _, item in h.delayed do if item.seconds == 3 then callback = item.callback end end
 	assert(callback); callback()
 	assert(p1.Character ~= old and Players:Get(p1).profile == profile and p1.Character.Appearance:FindFirstChild("Wing"))
+	assert(h.characterLoads[p1] == 2)
 end)
 check("unowned abilities and NaN input never activate", function()
 	move(p2, r.Vector3.new(0, 20, 20)); p2.Character.Humanoid.FloorMaterial = r.Enum.Material.Air

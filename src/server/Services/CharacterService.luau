@@ -21,20 +21,11 @@ local function ornament(folder, root, name, size, offset, color, shape, neon)
 	local w = Instance.new("WeldConstraint"); w.Part0 = root; w.Part1 = p; w.Parent = p
 	return p
 end
-function Characters:Init(players, remotes)
-	Players.CharacterAutoLoads = false
-	self.players = players; self.remotes = remotes; self.connections = {}; self.generations = {}
-end
-function Characters:Spawn(player)
-	if not player.Parent or not self.players:Get(player) then return end
-	if self.connections[player] then self.connections[player]:Disconnect() end
-	self.generations[player] = (self.generations[player] or 0) + 1
-	local generation = self.generations[player]
-	local old = player.Character
-	if old then old:Destroy() end
-	local model = Instance.new("Model"); model.Name = player.Name
-	local spawn = self.spawnPosition and self.spawnPosition(player) or Vector3.new(0, 5, 20)
-	local origin = CFrame.new(spawn + Vector3.new((player.UserId % 5 - 2) * 1.5, 0, 0))
+-- Use a shared StarterCharacter template so the engine initializes its native
+-- player controls, camera and character lifecycle through LoadCharacterAsync.
+local function blankRig()
+	local model = Instance.new("Model"); model.Name = "StarterCharacter"
+	local origin = CFrame.identity
 	local white = Color3.fromRGB(222, 239, 226)
 	local root = bodyPart(model, "HumanoidRootPart", Vector3.new(2, 2, 1), origin, white, true)
 	root.RootPriority = 127
@@ -52,10 +43,48 @@ function Characters:Spawn(player)
 	end
 	local humanoid = Instance.new("Humanoid"); humanoid.RigType = Enum.HumanoidRigType.R6; humanoid.WalkSpeed = Config.WalkSpeed; humanoid.UseJumpPower = true; humanoid.JumpPower = Config.JumpPower
 	humanoid.MaxHealth = 100; humanoid.Health = 100
-	humanoid.MaxSlopeAngle = 50; humanoid.DisplayName = player.DisplayName; humanoid.HealthDisplayType = Enum.HumanoidHealthDisplayType.AlwaysOff; humanoid.Parent = model
+	humanoid.MaxSlopeAngle = 50; humanoid.DisplayName = "Blank"; humanoid.HealthDisplayType = Enum.HumanoidHealthDisplayType.AlwaysOff; humanoid.Parent = model
 	local animator = Instance.new("Animator"); animator.Parent = humanoid
-	model.PrimaryPart = root; model:SetAttribute("SpawnedAt", os.clock()); model:SetAttribute("AbilityMode", "None"); model:SetAttribute("AbilityStamina", 1)
-	model.Parent = workspace; player.Character = model
+	model.PrimaryPart = root
+	return model
+end
+function Characters:Init(players, remotes)
+	Players.CharacterAutoLoads = false
+	self.players = players; self.remotes = remotes; self.connections = {}; self.generations = {}; self.loading = {}; self.loadFailures = {}
+	local starter = game:GetService("StarterPlayer")
+	starter.LoadCharacterAppearance = false
+	local template = starter:FindFirstChild("StarterCharacter")
+	if not template then template = blankRig(); template.Parent = starter end
+end
+function Characters:Spawn(player)
+	if not player.Parent or not self.players:Get(player) or self.loading[player] then return end
+	if self.connections[player] then self.connections[player]:Disconnect() end
+	self.generations[player] = (self.generations[player] or 0) + 1
+	local generation = self.generations[player]
+	self.loading[player] = true
+	local ok, err = pcall(function() player:LoadCharacterAsync() end)
+	self.loading[player] = nil
+	if self.generations[player] ~= generation or not player.Parent then return end
+	if not ok then
+		warn("[ADAPT] Character load failed: " .. tostring(err))
+		self.loadFailures[player] = (self.loadFailures[player] or 0) + 1
+		if self.loadFailures[player] <= 3 then
+			task.delay(3, function() if self.generations[player] == generation then self:Spawn(player) end end)
+		end
+		return
+	end
+	self.loadFailures[player] = nil
+	local model = player.Character
+	local root = model:WaitForChild("HumanoidRootPart")
+	local humanoid = model:WaitForChild("Humanoid")
+	local spawn = self.spawnPosition and self.spawnPosition(player) or Vector3.new(0, 5, 20)
+	model:PivotTo(CFrame.new(spawn + Vector3.new((player.UserId % 5 - 2) * 1.5, 0, 0)))
+	root.AssemblyLinearVelocity = Vector3.zero
+	humanoid.WalkSpeed = Config.WalkSpeed; humanoid.UseJumpPower = true; humanoid.JumpPower = Config.JumpPower
+	humanoid.DisplayName = player.DisplayName
+	-- ADAPT animates this rig procedurally; do not run the avatar Animate script too.
+	local animate = model:FindFirstChild("Animate"); if animate then animate:Destroy() end
+	model:SetAttribute("SpawnedAt", os.clock()); model:SetAttribute("AbilityMode", "None"); model:SetAttribute("AbilityStamina", 1)
 	root:SetNetworkOwner(player)
 	player.CameraMode = Enum.CameraMode.Classic
 	self:Apply(player)
@@ -120,7 +149,7 @@ function Characters:Apply(player)
 	end
 end
 function Characters:Remove(player)
-	self.generations[player] = nil
+	self.generations[player] = nil; self.loading[player] = nil; self.loadFailures[player] = nil
 	if self.connections[player] then self.connections[player]:Disconnect(); self.connections[player] = nil end
 	if player.Character then player.Character:Destroy() end
 end

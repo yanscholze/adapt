@@ -1,4 +1,38 @@
-# Validação atual — campanha 1.0 — 23/10/2026
+# Correção de movimento e câmera — 23/10/2026
+
+Relato do teste real: o diário apareceu e, mesmo após fechá-lo, o personagem não andava; a câmera não estava centralizada. O log dessa execução registrou servidor pronto e nenhuma exceção Luau do jogo. A causa completa no motor não foi isolada por inspeção ao vivo.
+
+Alterações: personagem personalizado registrado como `StarterCharacter` e carregado por `LoadCharacterAsync`, sem carregar aparência de conta; controles de teclado e direcional de toque explícitos; câmera `Custom` vinculada ao Humanoid e reposicionada perto dele no primeiro carregamento, no respawn e na substituição da câmera; fechamento do diário limpa a seleção de interface. A validação de movimento espera o término do posicionamento inicial para não rejeitar o checkpoint como teleporte.
+
+Verificação: `python3 scripts/check.py` aprovado, **80 cenários** (10 core, 21 integração, 13 cliente, 6 mundo, 17 campanha, 13 Terrain), 50 arquivos Luau compilados, 41 fontes incorporados idênticos aos do disco, 92 requires válidos. Novos testes cobrem clones independentes, renascimento pelo carregador, bloqueio de carregamento concorrente, espera pelo posicionamento inicial, fechamento real da introdução, câmera distante, partes que chegam depois, respawn, substituição da câmera e preservação do giro manual.
+
+O adaptador de `LoadCharacterAsync` apenas clona o modelo e emite o evento: não executa PlayerModule, entrada, renderização ou física. **Movimento e câmera desta revisão ainda precisam de confirmação em Play no Vinegar.** O cliente registra `[ADAPT CLIENT]` no Output do Studio com presença do PlayerModule, alvo/modo da câmera, velocidade de caminhada e pausa de streaming, sem dados de conta.
+
+Abertura desta revisão no Vinegar confirmada: o próprio `build/ADAPT-1.0.rbxl` atingiu `OpenPlaceSuccess` em aproximadamente 12 segundos e foi deixado aberto. Isso valida a abertura, não os controles em Play.
+
+Backup anterior: `backups/ADAPT-before-controls-fix-20261023.zip`.
+
+Referências de implementação: [StarterPlayer/StarterCharacter](https://create.roblox.com/docs/reference/engine/classes/StarterPlayer), [LoadCharacterAsync](https://create.roblox.com/docs/reference/engine/classes/Player#LoadCharacterAsync), [controles nativos](https://create.roblox.com/docs/reference/engine/classes/StarterPlayerScripts).
+
+---
+
+# Validação atual — correção do carregamento do Terrain — 23/10/2026
+
+`python3 scripts/check.py` foi executado novamente após corrigir as coordenadas serializadas do Terrain: **73 cenários aprovados**, sendo 10 de regras puras, 19 de integração, oito de cliente, seis de mundo, 17 de campanha e 13 de Terrain. Os 49 arquivos Luau foram compilados; os 40 fontes incorporados, 91 requires e remotes passaram nas verificações. O mapa completo foi reconstruído nos formatos binário e XML.
+
+A verificação anterior do Terrain era insuficiente: gerador e decoder compartilhavam a mesma suposição incorreta sobre byte order das coordenadas. Ela validava a geometria interpretada pelo próprio decoder, mas o Studio recebia coordenadas inválidas. O teste novo usa bytes com coordenadas esperadas de forma independente. Consulte `TERRAIN_LOAD_FIX.md`.
+
+**Abertura no motor:** o mapa completo com as coordenadas corrigidas carregou no mesmo Studio/Vinegar, sem alterar configurações gráficas. Os registros mostram carregamento das texturas do Terrain e `OpenPlaceSuccess`, em aproximadamente 12 segundos para o XML. O binário reconstruído, testado em uma cópia byte a byte idêntica ao `.rbxl` final, também apresentou `OpenPlaceSuccess` em aproximadamente 10 segundos.
+
+A abertura do próprio `build/ADAPT-1.0.rbxl` foi confirmada em seguida: `OpenPlaceSuccess` em aproximadamente 13 segundos, com o arquivo definitivo deixado aberto no Studio.
+
+**Continua pendente:** Play da campanha, renderização da interface em jogo, física e colisões durante o percurso, multiplayer, streaming sob rede real, aparelhos e DataStore da nuvem. A confirmação de abertura no editor não demonstra essas etapas.
+
+Os relatórios anteriores abaixo são históricos. Em especial, a aprovação offline da entrega inicial não comprovava a abertura do Terrain no Studio.
+
+---
+
+# Marco anterior: campanha 1.0 — entrega inicial — 23/10/2026
 
 Comando executado: `python3 scripts/check.py`. Resultado final: **PASS ALL OFFLINE CHECKS**.
 

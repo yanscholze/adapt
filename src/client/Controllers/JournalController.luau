@@ -27,8 +27,13 @@ function Journal.new(root, remotes, openCodex)
 	self.rescue.TextSize = 13
 	return self
 end
-function Journal:Close() self.scrim.Visible = false end
+function Journal:Close()
+	self.scrim.Visible = false
+	local gui = game:GetService("GuiService")
+	if gui.SelectedObject and gui.SelectedObject:IsDescendantOf(self.scrim) then gui.SelectedObject = nil end
+end
 function Journal:Toggle(tab)
+	if not tab and self.scrim.Visible then self:Close(); return end
 	if tab then self.tab = tab; self.scrim.Visible = true else self.scrim.Visible = not self.scrim.Visible end
 	if self.scrim.Visible then self:Render(); pcall(function() game:GetService("GuiService").SelectedObject = self.primary end) end
 end

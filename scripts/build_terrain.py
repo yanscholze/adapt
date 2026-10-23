@@ -94,7 +94,10 @@ def main():
                     if not near:continue
                 mat,occ=chunk(data,cx,cy,cz,caves)
                 if not np.any(mat):continue
-                delta=tuple(n-p for n,p in zip((cx,cy,cz),previous));packed=[struct.pack('<i',v) for v in delta]
+                # Studio stores coordinate deltas as big-endian i32 components,
+                # then interleaves their bytes. Little-endian creates enormous
+                # off-map coordinates and can hang Studio while loading.
+                delta=tuple(n-p for n,p in zip((cx,cy,cz),previous));packed=[struct.pack('>i',v) for v in delta]
                 out.extend(bytes(packed[axis][byte] for byte in range(4) for axis in range(3)))
                 out.extend(encode_runs(mat,occ));previous=(cx,cy,cz);count+=1;nonempty+=int(np.count_nonzero(mat))
         if cx%5==0:print('Terrain column',cx,'chunks',count,flush=True)

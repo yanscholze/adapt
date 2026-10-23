@@ -30,6 +30,9 @@ roblox.implementMethod("Instance", "WaitForChild", function(instance, name) retu
 roblox.implementMethod("Instance", "GetPropertyChangedSignal", function(instance, name) return event(instance, name) end)
 roblox.implementMethod("Instance", "GetAttributeChangedSignal", function(instance, name) return event(instance, "attribute:" .. name) end)
 for _, pair in { { "GuiButton", "Activated" }, { "Humanoid", "Died" }, { "Player", "CharacterAdded" }, { "ProximityPrompt", "Triggered" } } do roblox.implementProperty(pair[1], pair[2], function(instance) return event(instance, pair[2]) end) end
+for _, name in { "ChildAdded", "AncestryChanged" } do
+	roblox.implementProperty("Instance", name, function(instance) return event(instance, name) end)
+end
 roblox.implementMethod("Humanoid", "GetState", function(instance) return instance:GetAttribute("TestSwimming") and roblox.Enum.HumanoidStateType.Swimming or roblox.Enum.HumanoidStateType.Running end)
 roblox.implementMethod("BasePart", "SetNetworkOwner", function() end)
 roblox.implementMethod("BasePart", "SetNetworkOwnershipAuto", function() end)
@@ -44,6 +47,20 @@ local random = { NextInteger = function(_, a, b) randomSeed = (randomSeed * 4827
 function Harness.new(path)
 	local self = { game = roblox.deserializePlace(fs.readFile(path)), cache = {}, loading = {}, overrides = {}, delayed = {}, messages = {}, ids = 0 }
 	self.workspace = self.game:GetService("Workspace")
+	-- Contract adapter only: this clones the template and emits CharacterAdded.
+	-- It does NOT simulate Roblox injecting PlayerScripts, controls or physics.
+	self.characterLoads = {}
+	roblox.implementMethod("Player", "LoadCharacterAsync", function(player)
+		self.characterLoads[player] = (self.characterLoads[player] or 0) + 1
+		if self.loadCharacterHook then self.loadCharacterHook(player) end
+		if player.Character then player.Character:Destroy() end
+		local model = assert(self.game:GetService("StarterPlayer"):FindFirstChild("StarterCharacter")):Clone()
+		model.Name = player.Name; model.Parent = self.workspace; player.Character = model
+		model.Humanoid.FloorMaterial = roblox.Enum.Material.Air
+		model.Humanoid.MoveDirection = roblox.Vector3.zero
+		model.Humanoid.PlatformStand = false; model.Humanoid.AutoRotate = true
+		player.CharacterAdded:Fire(model)
+	end)
 	roblox.implementMethod("Workspace", "Raycast", function(_, ...) if self.raycast then return self.raycast(...) end; return nil end)
 	local collection = {
 		AddTag = function(_, instance, tag) instance:AddTag(tag) end,
@@ -61,6 +78,7 @@ function Harness.new(path)
 	}
 	self.overrides.RunService = { IsStudio = function() return true end, Heartbeat = signal(), RenderStepped = signal() }
 	self.overrides.UserInputService = { TouchEnabled = false, GetFocusedTextBox = function() return nil end }
+	self.overrides.GuiService = {}
 	self.bindings = {}; self.touchButtons = {}
 	self.overrides.ContextActionService = {
 		BindAction = function(_, name, callback) self.bindings[name] = callback; self.touchButtons[name] = roblox.Instance.new("TextButton") end,

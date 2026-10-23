@@ -20,7 +20,10 @@
       },
       "$properties": {
         "CameraMinZoomDistance": 7,
-        "CameraMaxZoomDistance": 40
+        "CameraMaxZoomDistance": 40,
+        "LoadCharacterAppearance": false,
+        "DevComputerMovementMode": "KeyboardMouse",
+        "DevTouchMovementMode": "DynamicThumbstick"
       }
     },
     "Workspace": {

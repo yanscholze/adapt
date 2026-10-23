@@ -2,6 +2,17 @@
 
 Todos os itens abaixo permanecem **pendentes de execução no motor**. Os testes offline aprovados não marcam estes itens como concluídos.
 
+## Regressão de controles e câmera — revisão de 23/10/2026
+
+Reabra o arquivo atualizado antes de iniciar F5; uma aba antiga não recarrega as alterações do disco.
+
+- [ ] Fechar a introdução e andar com WASD, saltar com Espaço; câmera começa próxima e acompanha o personagem.
+- [ ] Girar e ajustar zoom; abrir/fechar Diário por botão e C; confirmar que o movimento volta e que a câmera não reinicia durante o giro normal.
+- [ ] Morrer e renascer: corpo/adaptações preservados, caminhada e câmera continuam funcionando, inclusive após mudar o refúgio de retorno.
+- [ ] Dois clientes e rede lenta: inicialização sem personagem ausente, travamento por streaming ou correções indevidas de posição.
+- [ ] Celular e controle: direcional, pulo, giro da câmera e retorno do menu.
+- [ ] Conferir `[ADAPT CLIENT]` no Output: PlayerModule presente, câmera Custom, follows character true, walk speed 20 (ou bônus da adaptação), streaming paused false após carregar.
+
 ## Versão 1.0 — roteiro de liberação
 
 Use `build/ADAPT-1.0.rbxl`. Os roteiros históricos abaixo continuam úteis para as mecânicas básicas; o topo aéreo agora é alcançável com as Asas do Zênite.

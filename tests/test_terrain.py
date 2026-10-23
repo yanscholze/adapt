@@ -9,7 +9,7 @@ ROOT=Path(__file__).resolve().parents[1]
 def decode(blob):
     assert blob[:2]==b'\x01\x05';pos=2;previous=(0,0,0);chunks={};counts=collections.Counter()
     while pos<len(blob):
-        delta=tuple(struct.unpack('<i',bytes(blob[pos+b*3+a] for b in range(4)))[0] for a in range(3));pos+=12
+        delta=tuple(struct.unpack('>i',bytes(blob[pos+b*3+a] for b in range(4)))[0] for a in range(3));pos+=12
         key=tuple(p+d for p,d in zip(previous,delta));assert key not in chunks
         if chunks:assert key>previous
         previous=key;runs=[];total=0
@@ -46,6 +46,15 @@ class TerrainTests(unittest.TestCase):
     def test_real_terrain_is_embedded_and_all_chunks_are_complete(self):
         self.assertEqual(len(self.chunks),self.report['chunks']);self.assertGreater(len(self.blob),1000000)
         self.assertEqual(self.counts.total(),32768*len(self.chunks));self.assertGreater(self.counts[1],1000000)
+    def test_coordinate_byte_order_matches_known_studio_offsets(self):
+        # Independent byte contract from Studio's saved SmoothGrid: -1,-1,-1
+        # followed by offset 0,0,1. The latter must mean one chunk, not 2**24.
+        # Uniform water runs keep this fixture independent of our encoder.
+        water=bytes((0x81,0xff))*128
+        blob=b'\x01\x05'+b'\xff'*12+water+bytes.fromhex('000000000000000000000001')+water
+        chunks,_=decode(blob)
+        self.assertEqual(list(chunks),[(-1,-1,-1),(-1,-1,0)])
+        self.assertTrue(all(-16<=c<=16 for key in self.chunks for c in key))
     def test_archipelago_has_separation_and_no_accidental_global_baseplate(self):
         x,z=np.meshgrid(np.linspace(-1910,1910,260),np.linspace(-1910,1910,260));height,_,_,water=field(self.data,x,z)
         fraction=float(np.mean(height>water));self.assertGreater(fraction,.13);self.assertLess(fraction,.4)

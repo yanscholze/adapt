@@ -69,4 +69,57 @@ check("touch ability buttons unlock with anatomy and modal blocks attacks", func
 	modal = false; h.bindings.AdaptAttack(nil, r.Enum.UserInputState.Begin); assert(#h.messages == count + 1)
 	ability:Destroy(); assert(not h.bindings.AdaptGlide)
 end)
-print("CLIENT:", checks, "checks passed (UI objects and layout bounds; no rendered device verification)")
+check("closing the actual intro releases movement and does not reopen on state refresh", function()
+	local Ability = h.require(h.controllers.AbilityController)
+	hud.journal.introShown = nil; hud:Update(state)
+	local ability = Ability.new(h.remotes, function() return hud:IsModal() end)
+	assert(h.bindings.AdaptModalMovement() == r.Enum.ContextActionResult.Sink)
+	h.overrides.GuiService.SelectedObject = hud.journal.primary
+	hud.journal.primary.Activated:Fire()
+	assert(not hud:IsModal() and h.overrides.GuiService.SelectedObject == nil)
+	assert(h.bindings.AdaptModalMovement() == r.Enum.ContextActionResult.Pass)
+	hud:Update(state); assert(not hud:IsModal())
+	hud.journal:Toggle(); assert(hud:IsModal())
+	hud.journal:Toggle(); assert(not hud:IsModal() and h.overrides.GuiService.SelectedObject == nil)
+	ability:Destroy()
+end)
+local function rig()
+	local model = r.Instance.new("Model"); model.Parent = h.workspace
+	local root = r.Instance.new("Part"); root.Name = "HumanoidRootPart"; root.CFrame = r.CFrame.new(21, 5, 40); root.Parent = model
+	local humanoid = r.Instance.new("Humanoid"); humanoid.Parent = model
+	return model
+end
+local cameraController
+check("camera binds an existing character and leaves the editor aerial view", function()
+	p.Character = rig()
+	local camera = r.Instance.new("Camera"); camera.Parent = h.workspace
+	camera.CameraType = r.Enum.CameraType.Scriptable; camera.CFrame = r.CFrame.new(-1150, 1600, -2050)
+	h.workspace.CurrentCamera = camera
+	cameraController = h.require(h.controllers.CameraController).new()
+	assert(camera.CameraType == r.Enum.CameraType.Custom and camera.CameraSubject == p.Character.Humanoid)
+	assert((camera.CFrame.Position - p.Character.HumanoidRootPart.CFrame.Position).Magnitude < 25)
+end)
+check("camera waits for replicated rig parts and ignores an obsolete character", function()
+	local old = p.Character
+	local model = r.Instance.new("Model"); p.Character = model; p.CharacterAdded:Fire(model)
+	local root = r.Instance.new("Part"); root.Name = "HumanoidRootPart"; root.Parent = model; model.ChildAdded:Fire(root)
+	local humanoid = r.Instance.new("Humanoid"); humanoid.Parent = model; model.ChildAdded:Fire(humanoid)
+	model.Parent = h.workspace; model.AncestryChanged:Fire()
+	assert(h.workspace.CurrentCamera.CameraSubject == humanoid)
+	old.ChildAdded:Fire(root); assert(h.workspace.CurrentCamera.CameraSubject == humanoid)
+end)
+check("replacement camera and respawn rebind but ordinary updates preserve user orbit", function()
+	local camera = r.Instance.new("Camera"); camera.Parent = h.workspace; h.workspace.CurrentCamera = camera
+	h.workspace:GetPropertyChangedSignal("CurrentCamera"):Fire()
+	assert(camera.CameraSubject == p.Character.Humanoid and camera.CameraType == r.Enum.CameraType.Custom)
+	local orbit = r.CFrame.new(8, 9, 10); camera.CFrame = orbit; cameraController:Refresh()
+	assert(camera.CFrame == orbit)
+	p.Character = rig(); p.CharacterAdded:Fire(p.Character)
+	assert(camera.CameraSubject == p.Character.Humanoid and camera.CFrame ~= orbit)
+end)
+check("camera disconnects on cleanup", function()
+	local camera = h.workspace.CurrentCamera
+	cameraController:Destroy(); p.Character = rig(); p.CharacterAdded:Fire(p.Character)
+	assert(camera.CameraSubject ~= p.Character.Humanoid)
+end)
+print("CLIENT:", checks, "checks passed (UI and camera contracts; no engine input/physics verification)")

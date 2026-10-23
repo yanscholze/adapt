@@ -4,6 +4,8 @@ Explore como um **Blank**, colete Essence, escolha uma adaptação e abra novas 
 
 **Entrada mais rápida:** abra `build/ADAPT-1.0.rbxl` (ou `build/ADAPT.rbxl` / `build/ADAPT.rbxlx`) no Roblox Studio e pressione **Play (F5)**. O mapa já aparece no editor. Use **Play**, pois **Run/F8** não cria jogador nem interface.
 
+**Revisão de controles e câmera (23/10):** carregamento padrão do personagem, câmera próxima no início/renascimento e liberação do foco ao fechar o diário. Reabra o arquivo atualizado antes de F5. 80 verificações offline aprovadas; confirmação do movimento no motor ainda pendente. [Registro de validação](docs/VALIDATION.md).
+
 ## Campanha e lançamento 1.0
 
 A jornada agora tem começo e fim: tutorial, guardião inicial, oito santuários, 24 memórias, novas adaptações para os seis slots, refúgios com cura/retorno/viagem, Guardião do Zênite, epílogo e coroa. Abra **Diário [C]** para objetivos, mapa e troca de corpo. **M** abre o mapa e **R** interage; no toque, use os botões e prompts.
@@ -14,7 +16,7 @@ A jornada agora tem começo e fim: tutorial, guardião inicial, oito santuários
 - [Validação e limites do que foi testado](docs/VALIDATION.md)
 - [Artes de divulgação e créditos](assets/branding/CREDITS.md)
 
-O arquivo contém a implementação da campanha. **A validação final no motor, em aparelhos e com DataStore real permanece pendente**: a conexão StudioMCP foi recusada e o proxy falhou no Wine. Não houve publicação. A elegibilidade pública depende da conta do criador.
+O arquivo contém a implementação da campanha. Um erro na gravação das coordenadas do Terrain que congelava o carregamento foi corrigido em 23/10/2026; a abertura do mapa completo foi conferida pelos registros do Studio no Vinegar. Veja [o diagnóstico e a correção](docs/TERRAIN_LOAD_FIX.md). **O playtest da campanha, aparelhos e DataStore real permanecem pendentes.** Não houve publicação. A elegibilidade pública depende da conta do criador.
 
 ## Mundo expandido
 
@@ -116,7 +118,7 @@ Em servidores publicados, o serviço tenta salvar automaticamente. Uma falha no 
 
 ## Limitações e bugs conhecidos
 
-- Não há resultado de playtest real nesta entrega. O Studio existe neste Linux pelo Vinegar, mas não houve controle interativo do motor nesta sessão. As verificações offline não simulam física, câmera, renderização, replicação ou APIs Roblox.
+- Não há resultado de playtest real nesta entrega. A abertura do arquivo corrigido foi confirmada pelo Studio no Vinegar; isso não valida física, câmera, renderização da interface durante Play, replicação ou APIs Roblox.
 - Não há bug reproduzível conhecido nos testes executados. Aterrissagem, saída da borda de escalada, estabilidade do rig e latência precisam de confirmação no motor.
 - UI foi construída e seus limites foram conferidos em 360×640, 375×667, 667×375, 768×1024 e 1440×900; não são capturas nem testes em aparelhos reais. Legibilidade, safe areas, gamepad e colisões com a UI padrão continuam no roteiro manual.
 - Guardian é uma sentinela estacionária, com ataque radial anunciado. Não persegue nem navega o mapa.
