@@ -17,7 +17,7 @@ function PlayerService:Send(player)
 	local active = Progression.synergies(p.equipped, Adaptations, Synergies)
 	for _, id in active do p.synergies[id] = true end
 	if r.levelStat then r.levelStat.Value = p.level end
-	self.remotes.State:FireClient(player, { profile = p, threshold = Progression.threshold(p.level), pending = r.pending, activeSynergies = active, persistence = r.mode, debug = r.debug })
+	self.remotes.State:FireClient(player, { profile = p, threshold = Progression.threshold(p.level), pending = r.pending, activeSynergies = active, persistence = r.mode, debug = r.debug, journey = self.journey and self.journey:Snapshot(player) or nil })
 end
 function PlayerService:ReadyEvolution(player)
 	local r = self:Get(player); if not r or r.pending then return end

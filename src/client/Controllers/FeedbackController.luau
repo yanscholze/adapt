@@ -19,6 +19,11 @@ function Feedback:Sound(evolution)
 	local sound = Instance.new("Sound"); sound.SoundId = "rbxasset://sounds/volume_slider.ogg"; sound.Volume = 0.2; sound.PlaybackSpeed = evolution and 0.8 or 1.4; sound.Parent = SoundService
 	sound:Play(); Debris:AddItem(sound, 3)
 end
+function Feedback:Impact()
+	if not self.settings.sound then return end
+	local sound = Instance.new("Sound"); sound.SoundId = "rbxasset://sounds/action_jump_land.mp3"; sound.Volume = .22; sound.PlaybackSpeed = .8; sound.Parent = SoundService
+	sound:Play(); Debris:AddItem(sound, 3)
+end
 function Feedback:Pulse(position)
 	if self.settings.reducedMotion then return end
 	local part = Instance.new("Part"); part.Name = "LocalEssencePulse"; part.Shape = Enum.PartType.Ball; part.Size = Vector3.one; part.Position = position; part.Anchored = true; part.CanCollide = false; part.CanQuery = false; part.CanTouch = false
@@ -31,8 +36,11 @@ function Feedback:Event(kind, value, extra)
 	elseif kind == "Synergy" then self:Sound(true); self.hud:Message("SYNERGY SECRETA  •  " .. value)
 	elseif kind == "Guardian" then self:Sound(true); self.hud:Message("Guardian vencido!  +" .. value .. " energia")
 	elseif kind == "Area" then self.hud:Message(value .. "  •  " .. extra)
-	elseif kind == "Hurt" then self.hud:Message("Impacto! Afaste-se do círculo vermelho antes do próximo ataque.")
-	elseif kind == "Hit" then self:Sound(false)
+	elseif kind == "Hurt" then self:Impact(); self.hud:Message("Impacto! Observe o padrão anunciado e saia da luz vermelha.")
+	elseif kind == "Hit" then self:Impact()
+	elseif kind == "Memory" then self:Sound(true); self.hud:Message("MEMÓRIA RECUPERADA • " .. value)
+	elseif kind == "Chapter" then self:Sound(true); self.hud:Message("SEMENTE RESTAURADA • " .. value)
+	elseif kind == "Complete" then self:Sound(true); self.hud:Message("O MUNDO DESPERTOU • sua coroa foi desbloqueada")
 	elseif kind == "Info" then self.hud:Message(value) end
 end
 function Feedback:Step()

@@ -1,6 +1,8 @@
 --!nonstrict
 local Shared = game:GetService("ReplicatedStorage").Shared
 local Config = require(Shared.Config)
+local Progression = require(Shared.Progression)
+local Definitions = require(Shared.Adaptations)
 local G = Config.Guardian
 local Guardian = {}
 function Guardian:Init(world, players, remotes, analytics, canInteract)
@@ -37,6 +39,7 @@ function Guardian:Eligible(player, range)
 end
 function Guardian:Attack(player)
 	if self.hp <= 0 or not self.players:Get(player) then return end
+	if self.players:Get(player).pending then return end
 	local now = os.clock()
 	if now - (self.lastAttack[player] or 0) < G.PlayerCooldown or not self:Eligible(player, G.PlayerRange) then return end
 	local root = player.Character.HumanoidRootPart
@@ -54,6 +57,7 @@ function Guardian:Attack(player)
 		local r = self.players:Get(contributor)
 		if r and self:Eligible(contributor, G.ArenaRange + 10) then
 			self.analytics:Once(contributor, r.profile, "FIRST_GUARDIAN_DEFEATED")
+			if self.onDefeated then self.onDefeated(contributor) end
 			self.players:Energy(contributor, G.Reward, "Guardian"); self.remotes.Feedback:FireClient(contributor, "Guardian", G.Reward)
 		end
 	end
@@ -69,7 +73,11 @@ function Guardian:Step(now)
 		self.pendingStrike = nil; self.ring.Transparency = 1
 		for player in self.players.records do
 			local h = self:Eligible(player, G.AttackRange)
-			if h and not player.Character:FindFirstChildOfClass("ForceField") then h:TakeDamage(G.Damage); self.remotes.Feedback:FireClient(player, "Hurt", G.Damage) end
+			if h and not self.players:Get(player).pending and not player.Character:FindFirstChildOfClass("ForceField") then
+				local r = self.players:Get(player)
+				local damage = Progression.hasAbility(r.profile.equipped, Definitions, "HeatResistance") and G.Damage*.75 or G.Damage
+				h:TakeDamage(damage); self.remotes.Feedback:FireClient(player, "Hurt", damage)
+			end
 		end
 	elseif not self.pendingStrike and hasTarget and now >= self.nextAttack then
 		self.pendingStrike = now + G.Windup; self.nextAttack = now + G.AttackCooldown; self.ring.Transparency = 0.45

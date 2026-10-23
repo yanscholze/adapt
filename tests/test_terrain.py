@@ -104,5 +104,41 @@ class TerrainTests(unittest.TestCase):
         tree=ET.parse(ROOT/'build/ADAPT.rbxlx');workspace=tree.find(".//Item[@class='Workspace']")
         self.assertEqual(workspace.findtext("./Properties/bool[@name='StreamingEnabled']"),'true')
         self.assertLess(sum(1 for p in workspace.iter('Item') if p.attrib['class'] in ['Part','WedgePart','MeshPart']),2000)
+    def test_campaign_targets_have_clear_space_in_the_shipped_voxels(self):
+        journey=json.loads((ROOT/'build/campaign-layout.json').read_text())
+        for rid,rune in journey['runes'].items():
+            x,y,z=rune['position']
+            # Partial surface cells are permitted; a solid voxel at the head
+            # or an opaque overhead obstruction would bury the interaction.
+            material,occupancy=voxel(self.chunks,x,y+4,z)
+            self.assertTrue(material in (0,1) or occupancy<90,rid+' has no headroom')
+        for area,(x,y,z) in journey['camps'].items():
+            self.assertIn(voxel(self.chunks,x,y+3,z)[0],(0,1),area+' spawn is buried')
+    def test_every_land_chapter_has_a_slope_limited_route_from_its_refuge(self):
+        journey=json.loads((ROOT/'build/campaign-layout.json').read_text())
+        for island in self.data['islands']:
+            area=island['area']
+            if area in ('Wilds','Tideglass'):continue  # authored starter Parts and aquatic cavern respectively
+            cx,cz=island['center'];rx,rz=island['radius'];step=6
+            xs=np.arange(cx-rx-70,cx+rx+70,step);zs=np.arange(cz-rz-70,cz+rz+70,step)
+            xx,zz=np.meshgrid(xs,zs);height,_,_,water=field(self.data,xx,zz)
+            start=journey['camps'][area];start=(round((start[2]-zs[0])/step),round((start[0]-xs[0])/step))
+            reached={start};queue=collections.deque([start])
+            while queue:
+                iz,ix=queue.popleft()
+                for dz,dx in ((0,1),(0,-1),(1,0),(-1,0),(1,1),(1,-1),(-1,1),(-1,-1)):
+                    nz,nx=iz+dz,ix+dx;n=(nz,nx)
+                    if n in reached or not(0<=nz<len(zs) and 0<=nx<len(xs)):continue
+                    if height[n]<=water[n]+1 or abs(float(height[n]-height[iz,ix]))>math.hypot(dx,dz)*step*1.1:continue
+                    reached.add(n);queue.append(n)
+            for rid in journey['regions'][area]['runes']:
+                x,y,z=journey['runes'][rid]['position']
+                self.assertTrue(any(math.hypot(xs[n[1]]-x,zs[n[0]]-z)<10 and abs(float(height[n])-y)<9 for n in reached),area+'/'+rid+' lacks a gentle approach')
+    def test_ascendant_flight_budget_reaches_each_high_sky_destination(self):
+        # Bounds on vertical speed/time; actual steering/landing remains a Studio test.
+        start=(980,336,75)
+        for target in [(470,425,-520),(245,600,-590),(370,690,-720)]:
+            self.assertLess(max(math.hypot(target[0]-start[0],target[2]-start[2])/37.4,(target[1]-start[1])/20),35)
+            start=target
 
 if __name__=='__main__':unittest.main(verbosity=2)

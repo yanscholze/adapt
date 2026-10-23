@@ -95,14 +95,15 @@ def main():
     for source in sources:
         run(str(ROOT / ".tools/luau-compile"), str(source), quiet=True)
     print(f"PASS Luau syntax: {len(sources)} files")
-    # Shared modules are strict; engine modules get lint plus nonstrict checking.
+    # Pure typed modules use strict; engine-bound modules use nonstrict checking.
     # Engine API types are not included in the standalone analyzer.
     run(str(ROOT / ".tools/luau-analyze"), "src")
     run(str(ROOT / ".tools/rojo"), "build", "default.project.json", "-o", "build/ADAPT.rbxlx")
     static_contracts()
-    for test in ["core", "integration", "client", "world"]:
+    for test in ["core", "integration", "client", "world", "journey"]:
         run(str(ROOT / ".tools/lune"), "run", f"tests/{test}.luau")
     run(str(ROOT / ".tools/lune"), "run", "scripts/bake.luau")
+    run(str(ROOT / ".tools/lune"), "run", "scripts/export_release.luau")
     static_contracts()
     run(world_python(), "tests/test_terrain.py")
     run(world_python(), "scripts/render_atlas.py")

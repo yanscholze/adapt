@@ -1,12 +1,24 @@
-# ADAPT! — World Foundation
+# ADAPT! — 1.0 / O Arquipélago Desperto
 
 Explore como um **Blank**, colete Essence, escolha uma adaptação e abra novas rotas com seu novo corpo. Projeto original em Luau, sem assets pagos, dependências de runtime externas ou credenciais.
 
-**Entrada mais rápida:** abra `build/ADAPT-WorldFoundation.rbxl` (ou `build/ADAPT.rbxl` / `build/ADAPT.rbxlx`) no Roblox Studio e pressione **Play (F5)**. O mapa já aparece no editor. Use **Play**, pois **Run/F8** não cria jogador nem interface.
+**Entrada mais rápida:** abra `build/ADAPT-1.0.rbxl` (ou `build/ADAPT.rbxl` / `build/ADAPT.rbxlx`) no Roblox Studio e pressione **Play (F5)**. O mapa já aparece no editor. Use **Play**, pois **Run/F8** não cria jogador nem interface.
+
+## Campanha e lançamento 1.0
+
+A jornada agora tem começo e fim: tutorial, guardião inicial, oito santuários, 24 memórias, novas adaptações para os seis slots, refúgios com cura/retorno/viagem, Guardião do Zênite, epílogo e coroa. Abra **Diário [C]** para objetivos, mapa e troca de corpo. **M** abre o mapa e **R** interage; no toque, use os botões e prompts.
+
+- [Conteúdo, regras e operação da versão](docs/RELEASE_1_0.md)
+- [Preparação e instruções para publicar](docs/PUBLISHING.md)
+- [Auditoria das lacunas e decisão de escopo](docs/RELEASE_AUDIT.md)
+- [Validação e limites do que foi testado](docs/VALIDATION.md)
+- [Artes de divulgação e créditos](assets/branding/CREDITS.md)
+
+O arquivo contém a implementação da campanha. **A validação final no motor, em aparelhos e com DataStore real permanece pendente**: a conexão StudioMCP foi recusada e o proxy falhou no Wine. Não houve publicação. A elegibilidade pública depende da conta do criador.
 
 ## Mundo expandido
 
-A etapa **World Foundation** acrescenta oito biomas em 3.840 × 3.840 studs, 24 ilhotas, oito ilhas flutuantes e 42 POIs, com Terrain real já gravado no arquivo. O núcleo inicial e suas mecânicas foram preservados. Veja [o relatório do mundo](docs/WORLD_FOUNDATION.md) e [o atlas](build/WORLD_ATLAS.png).
+A etapa **World Foundation** acrescenta oito biomas em 3.840 × 3.840 studs, 24 ilhotas, oito ilhas flutuantes e 42 POIs, com Terrain real já gravado no arquivo. O núcleo inicial permanece; a campanha integra os novos destinos, e uma ligação no vale de Rift Crown foi corrigida. Veja [o relatório do mundo](docs/WORLD_FOUNDATION.md) e [o atlas](build/WORLD_ATLAS.png).
 
 ## O que está implementado
 
@@ -16,17 +28,17 @@ A etapa **World Foundation** acrescenta oito biomas em 3.840 × 3.840 studs, 24 
 | Essence | 131 pontos pelo mundo, incluindo os 18 comuns e 3 raros originais; coleta por proximidade no servidor e respawn compartilhado |
 | Evolução | Energia, thresholds, três cards, validação com token de escolha, energia excedente preservada |
 | Anatomia | Head / Body / Arms / Legs / Back / Tail; substituir uma adaptação mantém os outros slots |
-| Adaptações | Wings, Grip Claws, Night Eyes e três variantes configuradas pelos mesmos comportamentos |
-| Habilidades | Planeio finito, escalada só em superfícies marcadas, revelação local de objetos ocultos |
+| Adaptações | Dez definições: as seis iniciais, Patas de Salto, Cauda das Marés, Carapaça de Brasa e Asas do Zênite |
+| Habilidades | Planeio, escalada, visão noturna, salto, natação/respiração, proteção térmica e ascensão finita |
 | Mundo | Oito biomas, 24 ilhotas, oito ilhas flutuantes, cavernas e oceano; rotas originais preservadas dentro de Verdant |
 | Guardian | HP, aviso de ataque em área, dano, ataque do jogador, recompensa por contribuição e respawn |
 | Codex | Adaptações, áreas e synergy secreta; desconhecidos aparecem como ??? |
 | Persistência | UpdateAsync, lease por sessão, autosave, saída, shutdown, schema e modo seguro após falha de leitura |
-| Interface | Energia, nível, vida, stamina, dicas, waypoint inicial, Codex, escolhas, opções de som e movimento |
+| Interface | HUD, diário, mapa, direção/distância, memórias pessoais, prévia do corpo em 3D, inventário, Codex e opções |
 | Plataforma | Teclado, botões de toque e atalhos básicos de controle; testes em aparelhos ainda pendentes |
 | Extras | Leaderstats Evolution, analytics desacoplado e desligado, feedback, ferramentas DEV protegidas |
 
-**Estado da validação:** build real gerado; análise/compilação Luau e 52 verificações offline aprovadas. Testes usam os módulos reais, instâncias offline e serviços simulados. **Física, renderização, rede multiplayer e DataStore real ainda não foram validados no Studio.** Não foi feito login, publicação ou push.
+**Estado da validação:** build real gerado; análise/compilação Luau e verificações offline documentadas em `docs/VALIDATION.md`. Testes usam os módulos reais, instâncias offline e serviços simulados. **Física, renderização, rede multiplayer e DataStore real ainda não foram validados no Studio.** Não foi feito login, publicação ou push.
 
 ## Como jogar e testar as adaptações
 
@@ -41,7 +53,7 @@ Ande com WASD ou o direcional de toque; salte com Espaço ou o botão padrão do
 
 **F / Atacar** causa dano ao Guardian na arena em `(20, 4.5, 70)`. Afaste-se do círculo vermelho antes do impacto. Quem contribuiu e permanece próximo recebe 45 de energia, uma vez por vida do Guardian. O Guardian reaparece em 35 segundos.
 
-**C / Codex** abre descobertas e opções. No toque, use os botões **Planar**, **Escalar**, **Atacar** e **Codex**. As habilidades aparecem conforme os slots são desbloqueados. Suporte básico de controle: X planeia, Y escala, R2 ataca, Select abre Codex; navegação completa por controle requer playtest.
+**C / Diário** abre jornada, mapa e corpo. O botão **Codex** abre descobertas e opções. No toque, use os botões **Planar**, **Escalar**, **Atacar** e **Codex**. As habilidades aparecem conforme os slots são desbloqueados. Suporte básico de controle: X planeia, Y escala, R2 ataca, Select abre Diário; navegação por controle requer playtest no dispositivo.
 
 ## DEV — teste rápido sem grind
 
@@ -96,7 +108,7 @@ O instalador baixa apenas releases públicos oficiais, com versões e hashes em 
 
 ## Persistência e ações manuais
 
-Por padrão, **Studio usa memória temporária**, permitindo jogar sem publicar ou habilitar APIs. Fechar o teste descarta o progresso desse modo. O HUD e o estado distinguem `StudioMemory`, `Cloud` e `ReadOnly`.
+O schema atual é 2, no mesmo armazenamento `ADAPT_Profile_v1`, preservando os campos anteriores e acrescentando a campanha. Por padrão, **Studio usa memória temporária**, permitindo jogar sem publicar ou habilitar APIs. Fechar o teste descarta o progresso desse modo. O HUD e o estado distinguem `StudioMemory`, `Cloud` e `ReadOnly`.
 
 Para testar DataStore real, o responsável deve, manualmente, salvar/publicar uma **experiência privada de teste**, habilitar **Game Settings → Security → Enable Studio Access to API Services**, usar um nome de DataStore separado e definir `StudioPersistence = true`. Isso não foi executado nesta sessão. A documentação oficial explica o [acesso a DataStore em Studio](https://create.roblox.com/docs/cloud-services/data-stores).
 
@@ -108,25 +120,18 @@ Em servidores publicados, o serviço tenta salvar automaticamente. Uma falha no 
 - Não há bug reproduzível conhecido nos testes executados. Aterrissagem, saída da borda de escalada, estabilidade do rig e latência precisam de confirmação no motor.
 - UI foi construída e seus limites foram conferidos em 360×640, 375×667, 667×375, 768×1024 e 1440×900; não são capturas nem testes em aparelhos reais. Legibilidade, safe areas, gamepad e colisões com a UI padrão continuam no roteiro manual.
 - Guardian é uma sentinela estacionária, com ataque radial anunciado. Não persegue nem navega o mapa.
-- Animação e modelos são procedurais de protótipo. Não há animações artísticas, editor de criaturas ou troca livre de loadout fora das evoluções/DEV.
-- Há seis definições e três comportamentos. Novas habilidades distintas precisam de código próprio. Variantes mantêm opções disponíveis após descobrir as três bases.
+- Modelos e animação usam geometria e movimento procedurais próprios. A troca de adaptações descobertas acontece pelo Diário, perto de refúgios. Não há editor livre de anatomia.
+- Há dez definições de adaptação; os novos comportamentos são ligados à campanha. As variantes iniciais mantêm escolhas disponíveis depois das primeiras descobertas.
 - A proteção de movimento é uma barreira simples contra teleporte, não um anticheat completo. A validação de ações continua no servidor.
 - Analytics registra milestones locais no perfil. Envio externo está desligado e não tem fornecedor configurado.
 - Colaboração é livre: Essence é compartilhada e pode haver competição; Guardian recompensa contribuidores próximos. Sem trading, PvP, matchmaking ou monetização.
-- O mundo atual usa Terrain e cerca de 1,7 mil Parts no arquivo, com streaming. Efeitos e criaturas acrescentam Parts durante o jogo. Não houve medição de FPS ou memória em dispositivo.
+- O mundo atual usa Terrain e menos de 2 mil Parts no arquivo, com streaming. Efeitos e criaturas acrescentam Parts durante o jogo. Não houve medição de FPS ou memória em dispositivo.
 
-## Próximos 10 passos, em ordem
+## Liberação pública
 
-1. Executar o roteiro completo em **Play/F5**, começando sem DEV para validar o primeiro minuto.
-2. Testar dois clientes no mesmo servidor e confirmar coleta única, aparências e revelação independente.
-3. Validar as três rotas no motor e ajustar pouso, bordas, alcance e tempo das habilidades.
-4. Testar em telefone real, incluindo orientação horizontal, câmera, safe areas e controles.
-5. Validar persistência em uma experiência privada de teste com DataStore separado, reconexão e falhas.
-6. Medir frame time, rede e memória com múltiplos jogadores; ajustar frequência de atualização se necessário.
-7. Calibrar FTUE, distribuição de Essence e thresholds com observação de jogadores.
-8. Melhorar Guardian, telegraph, recuperação pós-combate e feedback de habilidade indisponível.
-9. Adicionar uma adaptação com habilidade nova, exercitando Body/Legs/Tail e requisitos adicionais.
-10. Conectar um sink de analytics após decidir política de dados e usar métricas para orientar uma próxima versão.
+O conteúdo da versão está implementado. Antes de liberar ao público, execute `docs/STUDIO_TESTS.md`: primeiro minuto, campanha, multiplayer, mobile, streaming e persistência real em uma experiência privada separada. Confira o enquadramento de capa/ícone e as permissões no Creator Dashboard. O passo a passo e o texto da página estão em `docs/PUBLISHING.md`.
+
+A auditoria inicial e os relatórios anteriores permanecem em `docs/`. Os marcos anteriores de validação são históricos e não substituem os resultados da versão atual.
 
 ## Git e entrega
 

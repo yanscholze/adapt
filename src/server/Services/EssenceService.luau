@@ -32,6 +32,7 @@ function Essence:Step(now)
 		end
 		if node.readyAt == 0 then
 			for player, r in self.players.records do
+				if r.pending then continue end
 				local character = player.Character; local root = character and character:FindFirstChild("HumanoidRootPart"); local h = character and character:FindFirstChildOfClass("Humanoid")
 				if not root or not h or h.Health <= 0 or not self.canInteract(player) then continue end
 				if (root.CFrame.Position - orb.CFrame.Position).Magnitude > Config.CollectRadius then continue end

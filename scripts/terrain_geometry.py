@@ -83,6 +83,15 @@ def field(data, x, z):
         desired=a[1]+(b[1]-a[1])*t
         blend=np.clip((18-dist)/8,0,1)
         top=top*(1-blend)+desired*blend
+    # Join the canyon-floor refuge to the switchback. Without this cut, the
+    # low Twin Gates basin is separated from the route by a steep cliff.
+    crown_entry=[(1000,39,30),(1040,48,-15),(980+np.cos(-1)*185,58,75+np.sin(-1)*185)]
+    for a,b in zip(crown_entry,crown_entry[1:]):
+        vx=b[0]-a[0];vz=b[2]-a[2];t=np.clip(((x-a[0])*vx+(z-a[2])*vz)/(vx*vx+vz*vz),0,1)
+        dist=np.sqrt((x-a[0]-t*vx)**2+(z-a[2]-t*vz)**2)
+        desired=a[1]+(b[1]-a[1])*t
+        blend=np.clip((20-dist)/8,0,1)
+        top=top*(1-blend)+desired*blend
     # Oldgrowth's contained freshwater pool.
     pond=((x+1120)/48)**2+((z+650)/43)**2
     top=np.where(pond<1,np.minimum(top,31+5*pond),top)

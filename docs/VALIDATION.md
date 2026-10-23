@@ -1,4 +1,29 @@
-# Validação atual — World Foundation — 17/10/2026
+# Validação atual — campanha 1.0 — 23/10/2026
+
+Comando executado: `python3 scripts/check.py`. Resultado final: **PASS ALL OFFLINE CHECKS**.
+
+- **72 cenários aprovados:** 10 de regras puras, 19 de integração, oito de cliente, seis de mundo, 17 da campanha e 12 de Terrain.
+- 49 arquivos Luau compilados, incluindo 40 fontes do jogo. Análise Luau aprovada; a limitação dos tipos do motor no analisador standalone permanece.
+- Os 40 fontes incorporados ao lugar correspondem aos arquivos atuais; 91 requires resolvidos, grafo sem ciclos e remotes declarados.
+- Campanha simulada do tutorial à vitória final: desbloqueios, 24 memórias, oito sementes, troca de corpo, refúgios, viagem, resgate, checkpoint, morte, recompensas únicas, três padrões de combate e epílogo.
+- Servidor rejeita pedidos distantes, itens não descobertos, pré-requisitos ausentes, repetição de recompensas e ataques inválidos. Finalização só recompensa contribuidores elegíveis próximos.
+- Migração do perfil anterior, sanitização e roundtrip de progresso verificados com armazenamento simulado. Falhas de leitura, lease concorrente e save continuam cobertos pela suíte anterior; nenhum DataStore da nuvem foi acessado.
+- Efeitos de salto, natação, oxigênio, calor, carapaça e ascensão conferidos por estado/velocidade nos serviços. Não são testes de movimento físico no Roblox.
+- Diário e suas três abas construídos em 360×640, 667×375 e 1440×900. As verificações anteriores de HUD, cards e Codex em outros tamanhos continuam aprovadas. Prévia 3D e elementos de interface são instanciados, mas não foram renderizados pelo motor nesta sessão.
+- Terrain real entregue: 2.192 chunks, 57.396.975 células ocupadas e 2.086.288 bytes de payload. Decoder independente e testes geométricos executados nos voxels do arquivo gravado.
+- Os 15 destinos terrestres novos têm aproximações amostradas a cada seis studs, com inclinação limitada a 1,1, a partir do respectivo refúgio. Os destinos iniciais, submersos e aéreos têm verificações separadas. A conexão de Rift Crown foi corrigida após falhar nesse teste.
+- 1.785 Parts no cenário gravado, 131 pontos de Essence, oito biomas, oito refúgios, oito santuários e 24 memórias. A campanha acrescenta modelos locais atômicos; as configurações de streaming anteriores permanecem.
+- Gerados `build/ADAPT-1.0.rbxl`, sua cópia `build/ADAPT.rbxl`, o XML `build/ADAPT.rbxlx`, atlas e âncoras de campanha exportadas dos módulos incorporados.
+- Capa e ícone originais incluídos em `assets/branding/`, com créditos e prompts. São ilustrações de divulgação, não capturas do jogo.
+- Snapshot antes das alterações em `backups/ADAPT-before-campaign-20261023.zip`; documentos dos marcos anteriores preservados abaixo. Não houve login, publicação, push ou uso de credenciais.
+
+**Pendência de liberação:** executar `STUDIO_TESTS.md` no Roblox Studio, com campanha completa, multiplayer, mobile, streaming, física, renderização e persistência real. Nesta sessão, o StudioMCP respondeu à inicialização, mas a conexão com o host Studio foi recusada e o proxy falhou no Wine. Não foi possível executar Play pelo agente. O jogo pode ser aberto pelo usuário sem MCP.
+
+Os testes da campanha reposicionam personagens para exercitar os serviços; não demonstram que um jogador percorreu fisicamente todo o mundo. Os trajetos de Terrain são amostragens e não cobrem cada detalhe de colisão. Não há medição de FPS, memória ou latência em aparelho real. O arquivo implementado e a suíte verde não substituem essa etapa de homologação.
+
+---
+
+# Marco anterior: World Foundation — 17/10/2026
 
 Comando executado: `python3 scripts/check.py`. Resultado final: aprovado.
 

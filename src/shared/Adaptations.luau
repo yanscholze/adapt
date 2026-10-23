@@ -2,8 +2,8 @@
 export type Definition = {
 	id: string, displayName: string, description: string, rarity: string, slot: string,
 	visualData: { kind: string, color: { number }, scale: number },
-	abilityData: { kind: string, speedMultiplier: number, durationMultiplier: number },
-	requirements: { minLevel: number }, tags: { string }, synergyTags: { string },
+	abilityData: { kind: string, speedMultiplier: number, durationMultiplier: number, liftSpeed: number? },
+	requirements: { minLevel: number, unlock: string? }, tags: { string }, synergyTags: { string },
 }
 local definitions: { [string]: Definition } = {
 	Wings = { id = "Wings", displayName = "Wings", description = "Abra asas de cristal. Plane até a ilha no céu.", rarity = "Common", slot = "Back", visualData = { kind = "Wings", color = { 139, 164, 255 }, scale = 1 }, abilityData = { kind = "Glide", speedMultiplier = 1, durationMultiplier = 1 }, requirements = { minLevel = 0 }, tags = { "aerial" }, synergyTags = { "aerial" } },
@@ -13,4 +13,8 @@ local definitions: { [string]: Definition } = {
 	StoneHooks = { id = "StoneHooks", displayName = "Stone Hooks", description = "Garras violetas: escale mais devagar, por mais tempo. Substitui Grip Claws.", rarity = "Rare", slot = "Arms", visualData = { kind = "Claws", color = { 189, 155, 255 }, scale = 1.25 }, abilityData = { kind = "Climb", speedMultiplier = 0.85, durationMultiplier = 1.35 }, requirements = { minLevel = 1 }, tags = { "vertical" }, synergyTags = { "grip" } },
 	EchoEyes = { id = "EchoEyes", displayName = "Echo Eyes", description = "Olhos de coral: uma nova assinatura para enxergar o oculto. Substitui Night Eyes.", rarity = "Rare", slot = "Head", visualData = { kind = "Eyes", color = { 255, 170, 122 }, scale = 1.2 }, abilityData = { kind = "NightVision", speedMultiplier = 1, durationMultiplier = 1 }, requirements = { minLevel = 1 }, tags = { "perception" }, synergyTags = { "night" } },
 }
+definitions.SpringLegs = { id = "SpringLegs", displayName = "Patas de Salto", description = "Patas elásticas: salte mais alto e corra mais rápido. Efeito automático.", rarity = "Rare", slot = "Legs", visualData = { kind = "Legs", color = { 174, 240, 142 }, scale = 1 }, abilityData = { kind = "Leap", speedMultiplier = 1.2, durationMultiplier = 1 }, requirements = { minLevel = 0, unlock = "UNLOCK_SpringLegs" }, tags = { "jump" }, synergyTags = { "spring" } }
+definitions.TideTail = { id = "TideTail", displayName = "Cauda das Marés", description = "Respire sob a água e nade mais rápido. Explore os túneis de Tideglass.", rarity = "Rare", slot = "Tail", visualData = { kind = "Tail", color = { 88, 212, 234 }, scale = 1 }, abilityData = { kind = "Aquatic", speedMultiplier = 1.4, durationMultiplier = 1 }, requirements = { minLevel = 0, unlock = "UNLOCK_TideTail" }, tags = { "water" }, synergyTags = { "water" } }
+definitions.EmberShell = { id = "EmberShell", displayName = "Carapaça de Brasa", description = "Resista ao calor da caldeira e reduza o dano de guardiões em 25%.", rarity = "Rare", slot = "Body", visualData = { kind = "Shell", color = { 242, 145, 89 }, scale = 1 }, abilityData = { kind = "HeatResistance", speedMultiplier = 1, durationMultiplier = 1 }, requirements = { minLevel = 0, unlock = "UNLOCK_EmberShell" }, tags = { "heat" }, synergyTags = { "heat" } }
+definitions.SkyWings = { id = "SkyWings", displayName = "Asas do Zênite", description = "G / Ascender sobe por até 35 s. Use G novamente para cair e pousar. O chão recarrega.", rarity = "Legendary", slot = "Back", visualData = { kind = "Wings", color = { 224, 205, 255 }, scale = 1.3 }, abilityData = { kind = "Glide", speedMultiplier = 1.1, durationMultiplier = 35 / 9, liftSpeed = 20 }, requirements = { minLevel = 0, unlock = "UNLOCK_SkyWings" }, tags = { "aerial" }, synergyTags = { "aerial" } }
 return definitions

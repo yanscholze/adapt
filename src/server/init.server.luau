@@ -16,6 +16,8 @@ local Ability = require(Services.AbilityService)
 local Essence = require(Services.EssenceService)
 local Guardian = require(Services.GuardianService)
 local Debug = require(Services.DebugService)
+local Journey = require(Services.JourneyService)
+local Finale = require(Services.FinaleService)
 
 Players.CharacterAutoLoads = false
 local folder = Instance.new("Folder"); folder.Name = "Remotes"; folder.Parent = ReplicatedStorage
@@ -30,6 +32,9 @@ Characters:Init(PlayerService, remotes); Ability:Init(PlayerService, Analytics)
 local function canInteract(player) return Ability:CanInteract(player) end
 Essence:Init(World, PlayerService, remotes, canInteract)
 Guardian:Init(World, PlayerService, remotes, Analytics, canInteract)
+Journey:Init(World, PlayerService, Ability, Characters, remotes)
+Finale:Init(World, PlayerService, Journey, remotes, canInteract)
+Guardian.onDefeated = function(player) Journey:GuardianDefeated(player) end
 Debug:Init(PlayerService, Characters, Ability, remotes)
 PlayerService.onBuildChanged = function(player) Ability:Stop(player); Characters:Apply(player) end
 
@@ -45,7 +50,17 @@ remotes.Ability.OnServerEvent:Connect(function(player, mode, direction)
 	if allowed(player, "ability", 15, 20) and PlayerService:Get(player) then Ability:Input(player, mode, direction) end
 end)
 remotes.Attack.OnServerEvent:Connect(function(player)
-	if allowed(player, "attack", 3, 4) then Guardian:Attack(player) end
+	if allowed(player, "attack", 3, 4) then if not Finale:Attack(player) then Guardian:Attack(player) end end
+end)
+remotes.Journey.OnServerEvent:Connect(function(player, action, id)
+	if not allowed(player, "journey", 2, 3) then return end
+	if action == "rescue" then Journey:Rescue(player) else Journey:Interact(player, action, id) end
+end)
+remotes.Equip.OnServerEvent:Connect(function(player, id)
+	if allowed(player, "equip", 2, 3) then Journey:Equip(player, id) end
+end)
+remotes.Travel.OnServerEvent:Connect(function(player, id)
+	if allowed(player, "travel", 1, 2) then Journey:Travel(player, id) end
 end)
 remotes.Codex.OnServerEvent:Connect(function(player)
 	local r = PlayerService:Get(player)
@@ -70,6 +85,7 @@ end
 Players.PlayerAdded:Connect(join)
 Players.PlayerRemoving:Connect(function(player)
 	Ability:Remove(player); Guardian:Remove(player); Characters:Remove(player)
+	Journey:Remove(player); Finale:Remove(player)
 	limiter:removePrefix(tostring(player.UserId) .. ":")
 	PlayerService:Remove(player)
 end)
@@ -82,7 +98,7 @@ RunService.Heartbeat:Connect(function(dt)
 	accumulated += dt
 	if accumulated < 0.15 then return end
 	accumulated = 0
-	Essence:Step(now); Guardian:Step(now)
+	Essence:Step(now); Guardian:Step(now); Journey:Step(now); Finale:Step(now)
 	for player, r in PlayerService.records do
 		local char = player.Character; local root = char and char:FindFirstChild("HumanoidRootPart")
 		if not root then continue end
@@ -119,4 +135,4 @@ game:BindToClose(function()
 	local deadline = os.clock() + 25
 	while remaining > 0 and os.clock() < deadline do task.wait(0.1) end
 end)
-print("[ADAPT] Server ready • procedural world • authoritative progression")
+print("[ADAPT] Server ready • campaign 1.0 • authoritative progression")

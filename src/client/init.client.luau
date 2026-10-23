@@ -16,33 +16,39 @@ local Night = require(Controllers.NightVisionController)
 local Feedback = require(Controllers.FeedbackController)
 local Animation = require(Controllers.AnimationController)
 local Environment = require(Controllers.EnvironmentController)
+local Navigation = require(Controllers.NavigationController)
+local JourneyVisual = require(Controllers.JourneyVisualController)
 local hud = Hud.new(remotes)
-local ability = Ability.new(remotes, function() return hud.choice.scrim.Visible or hud.codex.scrim.Visible end)
+local ability = Ability.new(remotes, function() return hud:IsModal() end)
 local night = Night.new()
 local feedback = Feedback.new(hud)
 local animation = Animation.new()
 local environment = Environment.new()
+local navigation = Navigation.new(hud)
+local journeyVisual = JourneyVisual.new()
 local receivedState = false
 remotes.State.OnClientEvent:Connect(function(state)
 	receivedState = true; hud:Update(state); ability:Update(state); night:Update(state); feedback:Update(state); animation:Update(state); environment:Update(state)
+	journeyVisual:Update(state)
 end)
 remotes.Feedback.OnClientEvent:Connect(function(kind, value, extra) feedback:Event(kind, value, extra); if kind == "Area" then environment:Area(value) end end)
 CAS:BindAction("AdaptCodex", function(_, input)
-	if input == Enum.UserInputState.Begin and not UserInputService:GetFocusedTextBox() and not hud.choice.scrim.Visible then hud.codex:Toggle() end
+	if input == Enum.UserInputState.Begin and not UserInputService:GetFocusedTextBox() and not hud.choice.scrim.Visible then hud.codex.scrim.Visible = false; hud.journal:Toggle() end
 	return Enum.ContextActionResult.Sink
 end, false, Enum.KeyCode.C, Enum.KeyCode.ButtonSelect)
 UserInputService.InputBegan:Connect(function(input, processed)
 	if processed then return end
 	local index = ({ [Enum.KeyCode.One] = 1, [Enum.KeyCode.Two] = 2, [Enum.KeyCode.Three] = 3 })[input.KeyCode]
 	if index and hud.choice.scrim.Visible then hud.choice:Pick(index) end
-	if input.KeyCode == Enum.KeyCode.Escape then hud.codex.scrim.Visible = false; hud.debug.Visible = false end
+	if input.KeyCode == Enum.KeyCode.M and not hud.choice.scrim.Visible then hud.codex.scrim.Visible = false; hud.journal:Toggle("Mapa") end
+	if input.KeyCode == Enum.KeyCode.Escape then hud.codex.scrim.Visible = false; hud.debug.Visible = false; hud.journal:Close() end
 end)
 
 local viewportConnection
 local function cameraChanged()
 	if viewportConnection then viewportConnection:Disconnect() end
 	local camera = workspace.CurrentCamera; if not camera then return end
-	local function resize() hud:Resize(camera.ViewportSize) end
+	local function resize() hud:Resize(camera.ViewportSize); ability:Resize(camera.ViewportSize) end
 	viewportConnection = camera:GetPropertyChangedSignal("ViewportSize"):Connect(resize); resize()
 	local char = Players.LocalPlayer.Character; local h = char and char:FindFirstChildOfClass("Humanoid")
 	if h then camera.CameraSubject = h end
@@ -60,6 +66,7 @@ RunService.Heartbeat:Connect(function(dt)
 	local char = Players.LocalPlayer.Character; local h = char and char:FindFirstChildOfClass("Humanoid")
 	if h then hud:Vitals(h.Health, char:GetAttribute("AbilityStamina") or 1, char:GetAttribute("AbilityMode") or "None") end
 	feedback:Step()
+	navigation:Step()
 end)
 task.spawn(function()
 	for _ = 1, 15 do

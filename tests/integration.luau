@@ -101,6 +101,10 @@ check("Climb rejects an untagged wall and accepts the marked face", function()
 	h.raycast = nil
 end)
 check("Guardian telegraphs, damages and rewards nearby contributors only once", function()
+	for _, p in { p1, p2 } do
+		local record = Players:Get(p)
+		while record.pending do assert(Players:Choose(p, record.pending.token, record.pending.options[1])) end
+	end
 	move(p1, World.guardianPosition + r.Vector3.new(0, 0, -7)); move(p2, World.guardianPosition + r.Vector3.new(0, 0, -8))
 	for _, p in { p1, p2 } do local shield = p.Character:FindFirstChildOfClass("ForceField"); if shield then shield:Destroy() end end
 	Guardian:Step(300); assert(Guardian.pendingStrike and Guardian.ring.Transparency < 1)

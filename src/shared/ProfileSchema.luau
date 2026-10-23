@@ -1,8 +1,9 @@
---!strict
+--!nonstrict
 local Schema = {}
+local Journey = require(script.Parent.Journey)
 local slots = { Head = true, Body = true, Arms = true, Legs = true, Back = true, Tail = true }
 function Schema.defaults(): any
-	return { version = 1, level = 0, energy = 0, equipped = {}, discovered = {}, synergies = {}, areas = {}, milestones = {}, settings = { sound = true, reducedMotion = false } }
+	return { version = 2, level = 0, energy = 0, equipped = {}, discovered = {}, synergies = {}, areas = {}, milestones = {}, journey = Journey.defaults(), settings = { sound = true, reducedMotion = false } }
 end
 local function finite(value: any, fallback: number, maximum: number): number
 	if type(value) ~= "number" or value ~= value or math.abs(value) == math.huge then return fallback end
@@ -13,6 +14,7 @@ function Schema.sanitize(raw: any, definitions: any, synergies: any, areas: any)
 	if type(raw) ~= "table" then return p end
 	p.level = finite(raw.level, 0, 100000)
 	p.energy = finite(raw.energy, 0, 5000)
+	p.journey = Journey.sanitize(raw.journey)
 	local registries: { [string]: any } = { discovered = definitions, synergies = synergies, areas = areas }
 	for field, registry in registries do
 		if type(raw[field]) == "table" then

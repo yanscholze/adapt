@@ -49,5 +49,6 @@ function Choice:Update(state)
 		if old then card:SetAttribute("Replaces", old) end
 		table.insert(self.cards, card)
 	end
+	pcall(function() game:GetService("GuiService").SelectedObject = self.cards[1] end)
 end
 return Choice

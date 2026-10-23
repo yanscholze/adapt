@@ -29,7 +29,8 @@ end
 roblox.implementMethod("Instance", "WaitForChild", function(instance, name) return assert(instance:FindFirstChild(name), "Missing child: " .. instance.Name .. "." .. name) end)
 roblox.implementMethod("Instance", "GetPropertyChangedSignal", function(instance, name) return event(instance, name) end)
 roblox.implementMethod("Instance", "GetAttributeChangedSignal", function(instance, name) return event(instance, "attribute:" .. name) end)
-for _, pair in { { "GuiButton", "Activated" }, { "Humanoid", "Died" }, { "Player", "CharacterAdded" } } do roblox.implementProperty(pair[1], pair[2], function(instance) return event(instance, pair[2]) end) end
+for _, pair in { { "GuiButton", "Activated" }, { "Humanoid", "Died" }, { "Player", "CharacterAdded" }, { "ProximityPrompt", "Triggered" } } do roblox.implementProperty(pair[1], pair[2], function(instance) return event(instance, pair[2]) end) end
+roblox.implementMethod("Humanoid", "GetState", function(instance) return instance:GetAttribute("TestSwimming") and roblox.Enum.HumanoidStateType.Swimming or roblox.Enum.HumanoidStateType.Running end)
 roblox.implementMethod("BasePart", "SetNetworkOwner", function() end)
 roblox.implementMethod("BasePart", "SetNetworkOwnershipAuto", function() end)
 roblox.implementMethod("Humanoid", "TakeDamage", function(h, amount) h.Health = math.max(0, h.Health - amount) end)
@@ -63,6 +64,7 @@ function Harness.new(path)
 	self.bindings = {}; self.touchButtons = {}
 	self.overrides.ContextActionService = {
 		BindAction = function(_, name, callback) self.bindings[name] = callback; self.touchButtons[name] = roblox.Instance.new("TextButton") end,
+		BindActionAtPriority = function(_, name, callback) self.bindings[name] = callback end,
 		UnbindAction = function(_, name) self.bindings[name] = nil end,
 		SetTitle = function() end, SetPosition = function() end,
 		GetButton = function(_, name) return self.touchButtons[name] end,
@@ -79,7 +81,7 @@ function Harness.new(path)
 			workspace = self.workspace, script = module, require = self.require,
 			Instance = { new = function(class)
 				local instance = roblox.Instance.new(class)
-				if class == "Humanoid" then instance.FloorMaterial = roblox.Enum.Material.Air; instance.MoveDirection = roblox.Vector3.zero end
+				if class == "Humanoid" then instance.FloorMaterial = roblox.Enum.Material.Air; instance.MoveDirection = roblox.Vector3.zero; instance.PlatformStand = false; instance.AutoRotate = true end
 				if instance:IsA("BasePart") then instance.AssemblyLinearVelocity = roblox.Vector3.zero end
 				return instance
 			end }, Vector3 = roblox.Vector3, Vector2 = roblox.Vector2, CFrame = roblox.CFrame, Color3 = roblox.Color3,

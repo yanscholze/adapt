@@ -7,7 +7,7 @@ end
 function Progression.options(profile: any, definitions: any, random: any): { string }
 	local candidates = {}
 	for id, definition in definitions do
-		if definition.requirements.minLevel <= profile.level and profile.equipped[definition.slot] ~= id then
+		if definition.requirements.minLevel <= profile.level and (not definition.requirements.unlock or profile.milestones[definition.requirements.unlock]) and profile.equipped[definition.slot] ~= id then
 			table.insert(candidates, id)
 		end
 	end

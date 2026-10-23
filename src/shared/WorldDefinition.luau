@@ -1,7 +1,7 @@
 --!strict
 -- Authored composition. Only small decorations use seeded variation.
 return {
- version = 2, seed = 817204, seaLevel = -20, extent = 1920, floor = -144,
+ version = 3, seed = 817204, seaLevel = -20, extent = 1920, floor = -144,
  islands = {
   { id = "Verdant", area = "Wilds", name = "Verdant Island", center = {0,0}, radius = {410,350}, height = 42, relief = 14, surface = "Grass", rock = "Rock", trees = 68, palette = {82,139,92},
     peaks = {{-195,-190,150,110,85},{170,210,105,100,85},{300,-160,85,68,95}} },
@@ -18,7 +18,7 @@ return {
   { id = "Hollow", area = "Hollow", name = "Vesper Hollow", center = {-1320,340}, radius = {320,335}, height = 38, relief = 18, surface = "Slate", rock = "Slate", trees = 20, palette = {100,88,151},
     peaks = {{-1440,370,150,115,110},{-1180,450,100,85,90}} },
  },
- -- Descending glide routes from the Crown; the high crown awaits future flight.
+ -- Descending glide routes from the Crown; ascendant wings reach the Zenith.
  floating = {
   { id="LumenPerch", center={118,29,-65}, radius={17,10,17}, surface="Grass" },
   { id="CloudGate", center={820,235,-85}, radius={62,27,53}, surface="Grass" },

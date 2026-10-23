@@ -17,9 +17,13 @@ function Codex.new(root, remotes)
 end
 function Codex:Toggle()
 	self.scrim.Visible = not self.scrim.Visible
-	if self.scrim.Visible then self.remotes.Codex:FireServer() end
+	if self.scrim.Visible then self.remotes.Codex:FireServer(); pcall(function() game:GetService("GuiService").SelectedObject = self.sound end) end
 end
-function Codex:Resize(viewport) self.panel.Size = UDim2.fromOffset(math.min(720, viewport.X - 24), math.min(620, viewport.Y - 24)) end
+function Codex:Resize(viewport)
+	self.panel.Size = UDim2.fromOffset(math.min(720, viewport.X - 24), math.min(620, viewport.Y - 24))
+	local narrow = viewport.X < 620
+	if narrow ~= self.narrow then self.narrow = narrow; self.signature = nil; if self.state then self:Update(self.state) end end
+end
 function Codex:Update(state)
 	self.state = state
 	self.sound.Text = state.profile.settings.sound and "Som: ligado" or "Som: desligado"
@@ -44,10 +48,10 @@ function Codex:Update(state)
 		for _, id in ids do
 			local data = section.registry[id]; local discovered = section.found[id]
 			index += 1
-			local row = Gui.round(Gui.new("Frame", { Size = UDim2.new(1, -12, 0, 88), BackgroundColor3 = Gui.Theme.panel, LayoutOrder = index }, self.list), 12)
+			local row = Gui.round(Gui.new("Frame", { Size = UDim2.new(1, -12, 0, self.narrow and 128 or 104), BackgroundColor3 = Gui.Theme.panel, LayoutOrder = index }, self.list), 12)
 			Gui.label(row, discovered and data.displayName or "???", UDim2.new(1, -24, 0, 28), UDim2.fromOffset(12, 6), 18)
 			local description = discovered and (data.description or data.hint or "Descoberto") or "Explore e transforme-se para descobrir."
-			Gui.label(row, description, UDim2.new(1, -24, 0, 48), UDim2.fromOffset(12, 34), 14, Gui.Theme.muted)
+			Gui.label(row, description, UDim2.new(1, -24, 1, -42), UDim2.fromOffset(12, 34), 14, Gui.Theme.muted)
 		end
 	end
 end

@@ -8,5 +8,6 @@ build:
 	python3 scripts/build_world_terrain.py
 	.tools/rojo build default.project.json -o build/ADAPT.rbxlx
 	.tools/lune run scripts/bake.luau
+	.tools/lune run scripts/export_release.luau
 serve:
 	.tools/rojo serve default.project.json

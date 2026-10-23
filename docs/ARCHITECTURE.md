@@ -1,3 +1,19 @@
+# Extensão da arquitetura — campanha 1.0
+
+A versão atual adiciona `Journey` (regras/dados), `JourneyLocations` (âncoras amostradas), `Sanctuaries` (cenário gravado), `JourneyService` (memórias, santuários, recompensas, refúgios, viagem, corpo e ambiente) e `FinaleService` (encontro final). O bootstrap continua iniciando dependências explicitamente; PlayerService recebe a jornada depois da inicialização e a inclui nos snapshots.
+
+O schema 2 acrescenta `journey` com `started`, `guardian`, `seals`, `runes`, `camps`, `checkpoint`, `complete` e `deaths`. Defaults e sanitize criam tabelas independentes e filtram IDs pelos registros. O nome do DataStore foi preservado. Clientes nunca gravam esse perfil diretamente.
+
+O `JournalController` fornece jornada, mapa e corpo, com ViewportFrame do modelo atual. `NavigationController` aponta para o objetivo; `JourneyVisualController` mantém o estado visual individual inclusive em objetos que entram via streaming. O diário não transmite posição para conceder recompensas. Remotes novos: `Journey`, `Equip`, `Travel`.
+
+Fluxo do final: oito sementes → prompt próximo → padrões anunciados → dano validado por servidor → contribuidor elegível e próximo → conclusão única no perfil → coroa/epílogo. Ausência de jogadores por dez segundos reinicia o encontro.
+
+Testes adicionais em `tests/journey.luau`; âncoras são exportadas do lugar construído para `build/campaign-layout.json`; `tests/test_terrain.py` verifica espaço livre e acesso amostrado aos destinos. Ver `RELEASE_1_0.md` para operação e limites.
+
+---
+
+## Referência da fundação original
+
 # Arquitetura e extensão
 
 ## Fluxo de autoridade

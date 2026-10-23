@@ -33,7 +33,8 @@ function Characters:Spawn(player)
 	local old = player.Character
 	if old then old:Destroy() end
 	local model = Instance.new("Model"); model.Name = player.Name
-	local origin = CFrame.new((player.UserId % 5 - 2) * 2.5, 5, 20)
+	local spawn = self.spawnPosition and self.spawnPosition(player) or Vector3.new(0, 5, 20)
+	local origin = CFrame.new(spawn + Vector3.new((player.UserId % 5 - 2) * 1.5, 0, 0))
 	local white = Color3.fromRGB(222, 239, 226)
 	local root = bodyPart(model, "HumanoidRootPart", Vector3.new(2, 2, 1), origin, white, true)
 	root.RootPriority = 127
@@ -62,6 +63,7 @@ function Characters:Spawn(player)
 	task.delay(Config.SpawnProtectionSeconds, function() if shield.Parent then shield:Destroy() end end)
 	self.connections[player] = humanoid.Died:Connect(function()
 		model:SetAttribute("AbilityMode", "None")
+		if self.onDeath then self.onDeath(player) end
 		task.delay(3, function() if self.generations[player] == generation then self:Spawn(player) end end)
 	end)
 	self.players:Send(player)
@@ -93,13 +95,28 @@ function Characters:Apply(player)
 				local arm = model[side == -1 and "Left Arm" or "Right Arm"]
 				for finger = -1, 1 do ornament(folder, arm, "Claw", Vector3.new(0.18, 0.8, 0.35) * visual.scale, CFrame.new(finger * 0.25, -1.15, -0.38) * CFrame.Angles(-0.4, 0, 0), color, Enum.PartType.Block, true) end
 			end
-		elseif visual.kind == "Eyes" then eyeColor = color; eyeScale = visual.scale; bright = true end
+		elseif visual.kind == "Eyes" then eyeColor = color; eyeScale = visual.scale; bright = true
+		elseif visual.kind == "Shell" then
+			ornament(folder, root, "EmberCarapace", Vector3.new(3.1, 2.6, 1.6), CFrame.new(0, -.2, .9), color)
+			for i = -1, 1 do ornament(folder, root, "ShellFacet", Vector3.new(.35, 1.7, .4), CFrame.new(i*.75, 0, 1.65), Color3.fromRGB(255, 214, 125), Enum.PartType.Block, true) end
+		elseif visual.kind == "Tail" then
+			ornament(folder, root, "TideTail", Vector3.new(.8, .9, 2.4), CFrame.new(0, -1, 1.8)*CFrame.Angles(-.25,0,0), color)
+			for _, side in { -1, 1 } do ornament(folder, root, "TailFin", Vector3.new(1.5, .3, 1.1), CFrame.new(side*.65, -.6, 2.8)*CFrame.Angles(0, side*.45,0), color, Enum.PartType.Block) end
+		elseif visual.kind == "Legs" then
+			for _, side in { -1, 1 } do ornament(folder, model[side == -1 and "Left Leg" or "Right Leg"], "SpringPaw", Vector3.new(1.3, 1, 1.7), CFrame.new(0,-.5,-.2), color) end
+		end
 	end
 	for _, slot in { "Head", "Body", "Arms", "Legs", "Back", "Tail" } do if not r.profile.equipped[slot] then model:SetAttribute("Slot" .. slot, nil) end end
 	for _, side in { -1, 1 } do ornament(folder, root, "Eye", Vector3.new(0.36, 0.5, 0.28) * eyeScale, CFrame.new(side * 0.55, 1.4, -1.15), eyeColor, Enum.PartType.Ball, bright) end
 	local active = Progression.synergies(r.profile.equipped, Definitions, Synergies)
 	if #active > 0 then
 		local light = Instance.new("PointLight"); light.Color = Color3.fromRGB(190, 170, 255); light.Brightness = 0.7; light.Range = 7; light.Parent = folder.BlankBody
+	end
+	if r.profile.journey and r.profile.journey.complete then
+		for i = 1, 5 do
+			local a = i*math.pi*2/5
+			ornament(folder, root, "WorldkeeperCrown", Vector3.new(.25, .65, .25), CFrame.new(math.cos(a)*.7, 2.5, math.sin(a)*.7-.15), Color3.fromRGB(255, 222, 130), Enum.PartType.Block, true)
+		end
 	end
 end
 function Characters:Remove(player)

@@ -29,7 +29,7 @@ check("portrait, landscape, tablet and desktop modal bounds fit viewport", funct
 end)
 check("touch guidance clears the movement and jump controls", function()
 	h.overrides.UserInputService.TouchEnabled = true; hud:Resize(r.Vector2.new(375, 667))
-	assert(hud.guide.Position.Y.Offset == 144 and hud.guide.AnchorPoint.Y == 0 and not hud.mode.Visible)
+	assert(hud.guide.Position.Y.Offset == 170 and hud.guide.AnchorPoint.Y == 0 and not hud.mode.Visible)
 	h.overrides.UserInputService.TouchEnabled = false
 end)
 check("choice submits server token exactly once while waiting for response", function()

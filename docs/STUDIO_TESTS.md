@@ -2,6 +2,30 @@
 
 Todos os itens abaixo permanecem **pendentes de execução no motor**. Os testes offline aprovados não marcam estes itens como concluídos.
 
+## Versão 1.0 — roteiro de liberação
+
+Use `build/ADAPT-1.0.rbxl`. Os roteiros históricos abaixo continuam úteis para as mecânicas básicas; o topo aéreo agora é alcançável com as Asas do Zênite.
+
+- [ ] F5: criatura aparece, diário abre, Começar fecha a introdução e a câmera acompanha; Output sem erros.
+- [ ] Sem DEV: cinco cristais → escolha → guardião → três adaptações disponíveis → três memórias iniciais → primeiro santuário.
+- [ ] Trocar corpo no refúgio; ver prévia 3D; tentar trocar longe e confirmar recusa com instrução.
+- [ ] Morrer e voltar ao último refúgio; resgate mantém descobertas; cura e recuperação fora de combate funcionam.
+- [ ] Seguir o diário por Oldgrowth, Tideglass, Sunscar, Ember, Hollow e Rift; cada capítulo exige três memórias. Confirmar chão e passagem em cada destino.
+- [ ] Mergulhar com e sem cauda; conferir ar e dano. Visitar caldeira com e sem carapaça. Confirmar que as memórias de biomas exigem a adaptação correta.
+- [ ] Sair do vale de Rift pela ligação nova e alcançar o cume pela trilha.
+- [ ] Sete sementes → equipar Asas do Zênite → saltar/G → High Orchard → Zênite → Star Needle. G cancela; pousar recarrega; reativar no ar não recarrega.
+- [ ] Oitava semente → despertar chefe. Testar área central, anel e ecos, com e sem carapaça. Confirmar áreas seguras e avisos visíveis.
+- [ ] Vencer: epílogo, coroa e recompensa única. Reconectar e confirmar que conclusão/coroa persistem no teste de nuvem.
+- [ ] Dois clientes: memórias independentes, Essence compartilhada, contribuições do chefe, morte de um participante e abandono da arena.
+- [ ] Viagem entre refúgios com rede lenta: esperar streaming, confirmar que não cai pelo chão. Testar retorno e respawn em cada ilha.
+- [ ] Telefone real em retrato e paisagem: diário, escolha, corpo, mapa, rolagem, câmera, prompts, pulo e três botões de ação sem sobreposição. Testar textos longos.
+- [ ] Controle: selecionar cards, abrir/fechar diário, rolar listas e ativar prompts. Publicar em console somente após validar.
+- [ ] Som desligado silencia feedback; movimento reduzido evita pulsos e animações decorativas; UI mantém informações sem depender da cor.
+- [ ] Perfil antigo v1 em DataStore de teste: migrar, salvar, reconectar; verificar campos antigos e campanha nova, sem usar dados de produção.
+- [ ] Medir FPS/memória/rede no dispositivo com o limite planejado de jogadores; registrar o resultado real.
+
+Registro: data, versão do arquivo, dispositivo, número de jogadores, itens aprovados, erros de Output e medições. Não marcar itens por inferência dos testes offline.
+
 ## Preparação sem publicar
 
 1. Abra `build/ADAPT.rbxl` no Roblox Studio. O `.rbxlx` contém o mesmo projeto em XML.
@@ -112,7 +136,7 @@ Esses adapters **não implementam simulação física**, concorrência distribu�
 - [ ] Entrar e sair das cinco cavernas de aproximação escavada, e nadar pelo túnel de Tideglass.
 - [ ] Percorrer as plataformas de escalada da Árvore das Eras e de Rift Crown, descansando entre trechos.
 - [ ] Testar Cloud Gate → Rain Garden → Azure Step → Sky Heart com Wings.
-- [ ] Confirmar que o topo aéreo inacessível permanece visível como destino futuro.
+- [ ] Na versão 1.0, confirmar que as Asas do Zênite alcançam o topo aéreo e seus objetivos.
 - [ ] Testar streaming ao caminhar, planar, teleportar via DEV e retornar ao spawn com dois clientes.
 - [ ] Medir FPS/memória no aparelho e ajustar raio, sombras e partículas com dados reais.
 

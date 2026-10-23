@@ -7,7 +7,7 @@ return {
 	SkyIsland = { displayName = "SKY ISLAND", priority = 50, center = { 118, 39, -65 }, size = { 34, 14, 34 }, spawn = { 118, 42, -65 }, hint = "Ganhe altura na rampa oeste e plane até aqui." },
 	EmberAtoll = { displayName="EMBER ATOLL",priority=10,center={1100,240,-980},size={790,700,720},spawn={1100,30,-710},hint="A caldeira domina o horizonte. Há túneis sob o basalto." },
 	RiftCrown = { displayName="RIFT CROWN",priority=10,center={1000,170,30},size={760,510,730},spawn={1000,48,30},hint="Siga a trilha em espiral até o cume ou procure as escarpas marcadas." },
-	SkyReach = { displayName="SKY REACH",priority=40,center={500,360,-390},size={900,740,1000},spawn={820,270,-85},floating=true,hint="Das montanhas, desça pelas ilhas. Acima, o zênite ainda espera por asas maiores." },
+	SkyReach = { displayName="SKY REACH",priority=40,center={500,360,-390},size={900,740,1000},spawn={820,270,-85},floating=true,hint="Restaure sete sementes para receber as Asas do Zênite e alcançar as ilhas mais altas." },
 	Oldgrowth = { displayName="OLDGROWTH SANCTUARY",priority=10,center={-1020,170,-780},size={850,560,750},spawn={-940,54,-690},hint="As raízes guardam passagens e a grande árvore oferece apoios para descansar." },
 	Sunscar = { displayName="SUNSCAR EXPANSE",priority=10,center={530,120,1140},size={900,400,730},spawn={530,62,1180},hint="Os arcos recortam o céu. Entre as mesas, procure fendas na pedra." },
 	Tideglass = { displayName="TIDEGLASS REEFS",priority=10,center={-650,-10,920},size={750,250,670},spawn={-450,52,900},hint="Canais, pequenas praias e estruturas abaixo da maré convidam a voltar." },

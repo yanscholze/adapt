@@ -13,6 +13,8 @@ function Smoke.run()
 	assert(world:GetAttribute("Generated"), "World generator did not finish")
 	assert(world:FindFirstChild("Essence") and #world.Essence:GetChildren() >= 21, "Essence spawner did not initialize")
 	assert(world:FindFirstChild("Guardian") and world.Guardian:GetAttribute("MaxHealth") == Config.Guardian.MaxHealth)
+	assert(world:FindFirstChild("Journey") and world:FindFirstChild("ZenithGuardian"), "Campaign objects missing")
+	assert(#CollectionService:GetTagged("JourneyObject") == 40, "Expected 8 refuges, 8 shrines and 24 memories")
 	for _, name in Config.Remotes do assert(ReplicatedStorage.Remotes:FindFirstChild(name), "Missing remote " .. name) end
 	assert(CollectionService:HasTag(world.Core.ClimbFace, "Climbable"))
 	assert(not world.Core.GripMark.CanQuery)
@@ -26,6 +28,7 @@ function Smoke.run()
 		assert(char:FindFirstChild("Appearance") and char:FindFirstChild("HumanoidRootPart"))
 		assert(char:FindFirstChildOfClass("Humanoid").Health > 0)
 		assert(player.leaderstats.Evolution.Value == state:Get(player).profile.level)
+		assert(state:Get(player).profile.version == 2 and state:Get(player).profile.journey.camps.Wilds)
 	end
 	print("[ADAPT SMOKE] Initial server invariants passed. Continue the movement, UI and multiplayer playtest.")
 	return true

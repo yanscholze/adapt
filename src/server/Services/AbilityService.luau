@@ -21,7 +21,7 @@ function Ability:Stop(player)
 	if s.attachment then s.attachment:Destroy(); s.attachment = nil end
 	if s.root and s.root.Parent then
 		local h = s.root.Parent:FindFirstChildOfClass("Humanoid")
-		if h then h.PlatformStand = false; h.AutoRotate = true; h.WalkSpeed = Config.WalkSpeed end
+			if h then h.PlatformStand = false; h.AutoRotate = true; h.WalkSpeed = Config.WalkSpeed end
 		s.root.Parent:SetAttribute("AbilityMode", "None")
 		pcall(function() s.root:SetNetworkOwnershipAuto() end)
 	end
@@ -93,7 +93,7 @@ function Ability:Step(dt, now)
 		local data = request and Progression.hasAbility(r.profile.equipped, Adaptations, request)
 		local valid = data ~= nil and self:CanInteract(player)
 		local wall
-		if request == "Glide" then valid = valid and not grounded and root.AssemblyLinearVelocity.Y <= 8 end
+		if request == "Glide" then valid = valid and not grounded and (data and data.liftSpeed ~= nil or root.AssemblyLinearVelocity.Y <= 8) end
 		if request == "Climb" then wall = self:Wall(char, s.input or Vector3.zero); valid = valid and wall ~= nil end
 		local maximum = 1; local used = 0
 		if data and request == "Glide" then
@@ -112,8 +112,9 @@ function Ability:Step(dt, now)
 		end
 		if request == "Glide" then
 			s.glideUsed += dt
-			local direction = s.input.Magnitude > 0.1 and s.input.Unit or Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z).Unit
-			s.velocity.VectorVelocity = direction * Config.Ability.GlideSpeed * data.speedMultiplier + Vector3.new(0, -Config.Ability.GlideFallSpeed, 0)
+			local facing = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z)
+			local direction = s.input.Magnitude > 0.1 and s.input.Unit or (facing.Magnitude > .01 and facing.Unit or Vector3.new(0, 0, -1))
+			s.velocity.VectorVelocity = direction * Config.Ability.GlideSpeed * data.speedMultiplier + Vector3.new(0, data.liftSpeed or -Config.Ability.GlideFallSpeed, 0)
 			root.CFrame = CFrame.lookAt(root.CFrame.Position, root.CFrame.Position + direction)
 		else
 			s.climbUsed += dt; s.velocity.VectorVelocity = -wall.Normal * 2 + Vector3.new(0, Config.Ability.ClimbSpeed * data.speedMultiplier, 0)
