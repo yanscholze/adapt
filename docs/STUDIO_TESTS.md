@@ -2,6 +2,15 @@
 
 Todos os itens abaixo permanecem **pendentes de execução no motor**. Os testes offline aprovados não marcam estes itens como concluídos.
 
+## Revisão visual do personagem — 23/10/2026
+
+- [ ] Comparar corpo inicial e conjunto evoluído com a capa: proporções, olhos, patas, faces dos cristais e cauda vistos de frente e de costas.
+- [ ] Repouso e piscar sem olhos/reflexos separados; caminhar e saltar sem braços rígidos; queda e pouso com transição.
+- [ ] Planar abre as asas; escalar alterna braços; nadar movimenta cauda e membros; atacar anima o braço.
+- [ ] Trocar asas/cauda e renascer: articulações visuais voltam a funcionar e nenhum detalhe antigo fica solto no mapa.
+- [ ] Movimento reduzido diminui a oscilação; câmera e WASD continuam funcionando.
+- [ ] Dois clientes veem movimento/ataque um do outro; medir desempenho com conjuntos completos em celular.
+
 ## Regressão de controles e câmera — revisão de 23/10/2026
 
 Reabra o arquivo atualizado antes de iniciar F5; uma aba antiga não recarrega as alterações do disco.

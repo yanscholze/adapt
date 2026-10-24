@@ -4,6 +4,10 @@
 
 Abra **`build/ADAPT-1.0.rbxl`** no Roblox Studio e use **Play / F5**. O cenário já está no arquivo; não é necessário instalar plugins, publicar ou habilitar APIs para jogar localmente. `build/ADAPT.rbxl` é uma cópia idêntica. Não use o arquivo antigo World Foundation para testar a campanha nova.
 
+## Personagem atualizado
+
+Esta revisão inclui a reconstrução visual e as animações descritas em [CHARACTER_ART.md](CHARACTER_ART.md). Abra novamente o arquivo atualizado para vê-las. As adaptações continuam dependendo dos desbloqueios; o corpo inicial também foi redesenhado. A prévia exportada está em `build/ADAPT-character-preview.png`.
+
 ## Jornada completa
 
 1. Comece pelo diário, colete cinco cristais e escolha o primeiro corpo.

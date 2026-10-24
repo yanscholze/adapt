@@ -1,3 +1,19 @@
+# Personagem e animação 3D — 23/10/2026
+
+Revisão baseada na capa e no ícone locais, com comparação visual da geometria exportada. Cabeça/olhos/patas refeitos, asas e garras facetadas, cauda articulada, carapaça/patas especiais/coroa atualizadas; poses interpoladas de repouso, caminhada, salto/queda/pouso, voo, escalada, natação e ataque. Detalhes e limites em [CHARACTER_ART.md](CHARACTER_ART.md).
+
+`python3 scripts/check.py`: **PASS ALL OFFLINE CHECKS**. **87 cenários**: 10 core, 21 integração, 13 cliente, 6 mundo, 17 campanha, 7 personagem, 13 Terrain. Compilação de 54 arquivos Luau; 43 fontes incorporados idênticos ao disco; 94 requires válidos. A suíte original de controles/câmera permanece aprovada. Foram exportadas quatro variantes reais para uma galeria editável e para a prévia técnica inspecionada.
+
+Verificado offline: decoração sem colisão/toque/consulta, massless e não ancorada; esqueleto/velocidade preservados; dez adaptações sem alterar progressão; troca limpa; conjunto completo com 390 peças decorativas e quatro juntas extras; poses finitas e distintas; piscar reabre; opção de movimento reduzido; atualização do controlador em PreSimulation, reconstrução após troca e limpeza.
+
+**Ainda pendente nesta revisão:** comparação visual no Play, comportamento físico das articulações, controles/câmera após a mudança visual, multiplayer e desempenho em aparelho. O render técnico não é screenshot de Studio e não demonstra física ou FPS. O elogio do usuário à versão anterior não foi tratado como aprovação desses itens novos.
+
+O arquivo final `build/ADAPT-1.0.rbxl` abriu no Vinegar/Studio com `OpenPlaceSuccess` em aproximadamente 21 segundos e foi deixado aberto. Abertura confirmada; Play visual ainda pendente. Comparação binária com o backup confirmou que habilidade/movimento do servidor, câmera, persistência, schema, definições de adaptações e Terrain permaneceram iguais.
+
+Backup anterior: `backups/ADAPT-before-character-art-20261023.zip`.
+
+---
+
 # Correção de movimento e câmera — 23/10/2026
 
 Relato do teste real: o diário apareceu e, mesmo após fechá-lo, o personagem não andava; a câmera não estava centralizada. O log dessa execução registrou servidor pronto e nenhuma exceção Luau do jogo. A causa completa no motor não foi isolada por inspeção ao vivo.

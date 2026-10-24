@@ -52,6 +52,7 @@ function Finale:Attack(player)
 	local params = RaycastParams.new(); params.FilterType = Enum.RaycastFilterType.Exclude; params.FilterDescendantsInstances = { char, self.model }
 	if workspace:Raycast(root.CFrame.Position, self.center - root.CFrame.Position, params) then return false end
 	self.lastAttack[player] = now; self.contributors[player] = true; self.hp = math.max(0, self.hp - 16)
+	player.Character:SetAttribute("AttackSequence", (player.Character:GetAttribute("AttackSequence") or 0)+1)
 	self.remotes.Feedback:FireClient(player, "Hit", 16); self:Update(self.pattern and self.pattern.message or "Encontre espaço entre os pulsos")
 	if self.hp == 0 then
 		self.active = false; self.pattern = nil; self.warning:ClearAllChildren(); self.respawnAt = now + 45

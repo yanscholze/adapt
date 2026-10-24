@@ -4,7 +4,7 @@ local CAS = game:GetService("ContextActionService")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local Ability = {}
-function Ability.new(remotes, isModal)
+function Ability.new(remotes, isModal, onAttack)
 	local self = setmetatable({ remotes = remotes, mode = "None", state = nil, elapsed = 0, wasActive = false, isModal = isModal }, { __index = Ability })
 	local function toggle(mode)
 		if self.isModal() or UserInputService:GetFocusedTextBox() then return end
@@ -19,7 +19,9 @@ function Ability.new(remotes, isModal)
 		return Enum.ContextActionResult.Sink
 	end, true, Enum.KeyCode.E, Enum.KeyCode.ButtonY)
 	CAS:BindAction("AdaptAttack", function(_, input)
-		if input == Enum.UserInputState.Begin and not self.isModal() and not UserInputService:GetFocusedTextBox() then remotes.Attack:FireServer() end
+		if input == Enum.UserInputState.Begin and not self.isModal() and not UserInputService:GetFocusedTextBox() then
+			remotes.Attack:FireServer(); if onAttack then onAttack() end
+		end
 		return Enum.ContextActionResult.Sink
 	end, true, Enum.KeyCode.F, Enum.KeyCode.ButtonR2)
 	CAS:SetTitle("AdaptGlide", "Planar"); CAS:SetTitle("AdaptClimb", "Escalar"); CAS:SetTitle("AdaptAttack", "Atacar")

@@ -100,13 +100,15 @@ def main():
     run(str(ROOT / ".tools/luau-analyze"), "src")
     run(str(ROOT / ".tools/rojo"), "build", "default.project.json", "-o", "build/ADAPT.rbxlx")
     static_contracts()
-    for test in ["core", "integration", "client", "world", "journey"]:
+    for test in ["core", "integration", "client", "world", "journey", "character"]:
         run(str(ROOT / ".tools/lune"), "run", f"tests/{test}.luau")
     run(str(ROOT / ".tools/lune"), "run", "scripts/bake.luau")
     run(str(ROOT / ".tools/lune"), "run", "scripts/export_release.luau")
     static_contracts()
     run(world_python(), "tests/test_terrain.py")
     run(world_python(), "scripts/render_atlas.py")
+    run(str(ROOT / ".tools/lune"), "run", "scripts/export_character.luau")
+    run(world_python(), "scripts/render_character.py")
     print("PASS ALL OFFLINE CHECKS. Studio playtest, real devices and cloud APIs remain manual.")
 
 

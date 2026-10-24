@@ -6,6 +6,8 @@ Explore como um **Blank**, colete Essence, escolha uma adaptação e abra novas 
 
 **Revisão de controles e câmera (23/10):** carregamento padrão do personagem, câmera próxima no início/renascimento e liberação do foco ao fechar o diário. Reabra o arquivo atualizado antes de F5. 80 verificações offline aprovadas; confirmação do movimento no motor ainda pendente. [Registro de validação](docs/VALIDATION.md).
 
+**Novo personagem 3D (23/10):** corpo e olhos refeitos, asas/garras facetadas, cauda articulada e animações de movimento. [Detalhes e limites](docs/CHARACTER_ART.md) · [Prévia da geometria real](build/ADAPT-character-preview.png). 87 testes offline aprovados; revisão visual e física em Play pendente.
+
 ## Campanha e lançamento 1.0
 
 A jornada agora tem começo e fim: tutorial, guardião inicial, oito santuários, 24 memórias, novas adaptações para os seis slots, refúgios com cura/retorno/viagem, Guardião do Zênite, epílogo e coroa. Abra **Diário [C]** para objetivos, mapa e troca de corpo. **M** abre o mapa e **R** interage; no toque, use os botões e prompts.

@@ -42,6 +42,9 @@ roblox.implementMethod("Model", "PivotTo", function(model, cf)
 	local delta = cf * model.PrimaryPart.CFrame:Inverse()
 	for _, part in model:GetDescendants() do if part:IsA("BasePart") then part.CFrame = delta * part.CFrame end end
 end)
+roblox.implementMethod("Players", "GetPlayers", function(players)
+	local result = {}; for _, child in players:GetChildren() do if child:IsA("Player") then table.insert(result, child) end end; return result
+end)
 local randomSeed = 17
 local random = { NextInteger = function(_, a, b) randomSeed = (randomSeed * 48271) % 2147483647; return a + randomSeed % (b - a + 1) end }
 function Harness.new(path)
@@ -76,7 +79,7 @@ function Harness.new(path)
 		GenerateGUID = function() self.ids += 1; return "offline-token-" .. self.ids end,
 		JSONEncode = function(_, value) return require("@lune/serde").encode("json", value) end,
 	}
-	self.overrides.RunService = { IsStudio = function() return true end, Heartbeat = signal(), RenderStepped = signal() }
+	self.overrides.RunService = { IsStudio = function() return true end, Heartbeat = signal(), RenderStepped = signal(), PreSimulation = signal() }
 	self.overrides.UserInputService = { TouchEnabled = false, GetFocusedTextBox = function() return nil end }
 	self.overrides.GuiService = {}
 	self.bindings = {}; self.touchButtons = {}

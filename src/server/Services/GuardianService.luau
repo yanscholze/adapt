@@ -47,6 +47,7 @@ function Guardian:Attack(player)
 	local hit = workspace:Raycast(root.CFrame.Position, self.core.CFrame.Position - root.CFrame.Position, params)
 	if hit and not hit.Instance:IsDescendantOf(self.model) then return end
 	self.lastAttack[player] = now
+	player.Character:SetAttribute("AttackSequence", (player.Character:GetAttribute("AttackSequence") or 0)+1)
 	self.hp = math.max(0, self.hp - G.PlayerDamage); self.damageByPlayer[player] = (self.damageByPlayer[player] or 0) + G.PlayerDamage
 	self.remotes.Feedback:FireClient(player, "Hit", G.PlayerDamage); self:Update()
 	if self.hp > 0 then return end
